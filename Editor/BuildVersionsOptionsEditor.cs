@@ -5,8 +5,8 @@ using UnityEngine;
  * 
  *  Build Versions
  *							  
- *	Build Information Editor
- *      The editor script for the build versions build information scriptable object...
+ *	Build Versions Options Editor
+ *      The editor script for the build versions options scriptable object
  *
  *  Warning:
  *	    Please refrain from editing this script as it will cause issues to the assets...
@@ -26,18 +26,19 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
-    [CustomEditor(typeof(BuildInformation))]
-    public class BuildInformationEditor : UnityEditor.Editor
+    [CustomEditor(typeof(BuildVersionOptions))]
+    public class BuildVersionsOptionsEditor : UnityEditor.Editor
     {
-        private SerializedProperty buildType;
-        private SerializedProperty buildDate;
-        private SerializedProperty buildNumber;
+        private SerializedProperty assetActive;
+        private SerializedProperty buildUpdateTime;
+        private SerializedProperty updatePlayerSettingsVersion;
+        
         
         private void OnEnable()
         {
-            buildType = serializedObject.FindProperty("buildType");
-            buildDate = serializedObject.FindProperty("buildDate");
-            buildNumber = serializedObject.FindProperty("buildNumber");
+            assetActive = serializedObject.FindProperty("assetActive");
+            buildUpdateTime = serializedObject.FindProperty("buildUpdateTime");
+            updatePlayerSettingsVersion = serializedObject.FindProperty("updateSystematic");
         }
 
         public override void OnInspectorGUI()
@@ -74,7 +75,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-            EditorGUILayout.LabelField("Build Information", EditorStyles.boldLabel, GUILayout.Width(TextWidth(" Build Information ")));
+            EditorGUILayout.LabelField("Build Versions Options", EditorStyles.boldLabel, GUILayout.Width(TextWidth(" Build Versions Options ")));
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
         }
@@ -82,9 +83,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
         private void ShowValues()
         {
-            EditorGUILayout.PropertyField(buildType);
-            EditorGUILayout.PropertyField(buildDate);
-            EditorGUILayout.PropertyField(buildNumber);
+            EditorGUILayout.PropertyField(assetActive);
+            EditorGUILayout.PropertyField(buildUpdateTime);
+            EditorGUILayout.PropertyField(updatePlayerSettingsVersion);
         }
         
         

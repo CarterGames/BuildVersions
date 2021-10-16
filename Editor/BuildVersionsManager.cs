@@ -1,13 +1,41 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
+/*
+ * 
+ *  Build Versions
+ *							  
+ *	Build Versions Manager
+ *      The main script of the build versions asset. 
+ *
+ *  Warning:
+ *	    Please refrain from editing this script as it will cause issues to the assets...
+ *			
+ *  Written by:
+ *      Jonathan Carter
+ *
+ *  Published By:
+ *      Carter Games
+ *      E: hello@carter.games
+ *      W: https://www.carter.games
+ *		
+ *  Version: 1.0.0
+ *	Last Updated: 09/10/2021 (d/m/y)							
+ * 
+ */
+
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     public class BuildVersionsManager : UnityEditor.Editor, IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
+        private static readonly string OptionsTypeFilter = "t:buildversionoptions";
+        private static readonly string BuildInfoObjectFilter = "t:buildinformation";
+        
+        
         [MenuItem("Tools/Build Versions | CG/Type/Set To Prototype", priority = 1)]
         public static void SetToPrePrototype() => SetBuildType("Prototype");
         
@@ -32,12 +60,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
         [MenuItem("Tools/Build Versions | CG/Type/Beta/Set To Open Beta", priority = 3)]
         public static void SetToOpenBeta() => SetBuildType("Open Beta");
         
+        [MenuItem("Tools/Build Versions | CG/Type/Release/Set To Release Candidate", priority = 4)]
+        public static void SetToReleaseCandidate() => SetBuildType("Release Candidate");
+        
         [MenuItem("Tools/Build Versions | CG/Type/Release/Set To Release", priority = 4)]
         public static void SetToRelease() => SetBuildType("Release");
         
-        [MenuItem("Tools/Build Versions | CG/Type/Release/Set To Release Candidate", priority = 4)]
-        public static void SetToReleaseCandidate() => SetBuildType("Release Candidate");
-
         [MenuItem("Tools/Build Versions | CG/Date/Set Date To Today")]
         public static void SetBuildDate() => SetDate();
         
@@ -45,8 +73,16 @@ namespace CarterGames.Assets.BuildVersions.Editor
         public static void IncrementBuild() => SetBuildNumber();
         
         [MenuItem("Tools/Build Versions | CG/Build Number/Reset Build Number")]
-        public static void ResetBuild() => SetBuildNumber(0);
+        public static void ResetBuild() => SetBuildNumber(1);
+
+        [MenuItem("Tools/Build Versions | CG/Version Number/Increment Major")]
+        public static void IncrementMajor() => CallUpdateVersionNumber(EditorUserBuildSettings.activeBuildTarget, 0);
         
+        [MenuItem("Tools/Build Versions | CG/Version Number/Increment Minor")]
+        public static void IncrementMinor() => CallUpdateVersionNumber(EditorUserBuildSettings.activeBuildTarget, 1);
+        
+        [MenuItem("Tools/Build Versions | CG/Version Number/Increment Build")]
+        public static void IncrementVersionBuild() => CallUpdateVersionNumber(EditorUserBuildSettings.activeBuildTarget);
         
 
         private static void SetBuildType(string value)
@@ -57,7 +93,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 Debug.LogWarning("Build Incrementer: Unable to update data as it was not found in the project!");
                 return;
             }
-            _info.buildNameType = value;
+            _info.BuildType = value;
             EditorUtility.SetDirty(_info);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -69,7 +105,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             var _info = GetBuildInformation();
             if (_info == null)
             {
-                Debug.LogError("Build Incrementer: Unable to update data as it was not found in the project!");
+                Debug.LogError("Build Versions | CG: Unable to update data as it was not found in the project!");
                 return;
             }
             _info.SetBuildDate();
@@ -84,14 +120,14 @@ namespace CarterGames.Assets.BuildVersions.Editor
             var _info = GetBuildInformation();
             if (_info == null)
             {
-                Debug.LogError("Build Incrementer: Unable to update data as it was not found in the project!");
+                Debug.LogError("Build Versions | CG: Unable to update data as it was not found in the project!");
                 return;
             }
 
             if (value.Equals(-1))
                 _info.IncrementBuildNumber();
             else
-                _info.buildNumber = value;
+                _info.BuildNumber = value;
             
             EditorUtility.SetDirty(_info);
             AssetDatabase.SaveAssets();
@@ -104,32 +140,107 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         public void OnPreprocessBuild(BuildReport report)
         {
+            CheckOrSpawn();
             var _settings = GetBuildVersionSettings();
+            if (!_settings.assetActive) return;
             if (_settings.buildUpdateTime != BuildIncrementTime.AnyBuild) return;
-            UpdateBuildNumber(_settings);
+            UpdateBuildNumber(_settings, report.summary.platform);
         }
         
         
         public void OnPostprocessBuild(BuildReport report)
         {
+            CheckOrSpawn();
             var _settings = GetBuildVersionSettings();
+            if (!_settings.assetActive) return;
             if (_settings.buildUpdateTime != BuildIncrementTime.OnlySuccessfulBuilds) return;
-            UpdateBuildNumber(_settings);
+            UpdateBuildNumber(_settings, report.summary.platform);
         }
 
 
-        private void UpdateBuildNumber(BuildVersionSettings settings)
+        private void UpdateBuildNumber(BuildVersionOptions options, BuildTarget report)
         {
-            if (settings.updatePlayerSettingsVersion)
-                UpdatePlayerSettings();
-            else
-                UpdateBuildScriptableObject();
-        }
-
-
-        private void UpdatePlayerSettings()
-        {
+            if (options.updateSystematic)
+                CallUpdateVersionNumber(report);
             
+            UpdateBuildScriptableObject();
+        }
+
+
+        private static void CallUpdateVersionNumber(BuildTarget t, int valueToEdit = 2)
+        {
+            switch (t)
+            {
+                case BuildTarget.StandaloneOSX:
+                    PlayerSettings.macOS.buildNumber = UpdateVersionNumber(PlayerSettings.macOS.buildNumber);
+                    break;
+                case BuildTarget.StandaloneWindows:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    break;
+                case BuildTarget.iOS:
+                    PlayerSettings.iOS.buildNumber = UpdateVersionNumber(PlayerSettings.iOS.buildNumber);
+                    break;
+                case BuildTarget.Android:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    if (GetBuildVersionSettings().androidUpdateBundleCode)
+                        PlayerSettings.Android.bundleVersionCode++;
+                    break;
+                case BuildTarget.StandaloneWindows64:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    break;
+                case BuildTarget.WebGL:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    break;
+                case BuildTarget.WSAPlayer:
+                    PlayerSettings.WSA.packageVersion = new Version(UpdateVersionNumber(PlayerSettings.WSA.packageVersion.ToString()));
+                    break;
+                case BuildTarget.StandaloneLinux64:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    break;
+                case BuildTarget.PS4:
+                    PlayerSettings.PS4.appVersion = UpdateVersionNumber(PlayerSettings.PS4.appVersion);
+                    break;
+                case BuildTarget.XboxOne:
+                    PlayerSettings.XboxOne.Version = UpdateVersionNumber(PlayerSettings.XboxOne.Version);
+                    break;
+                case BuildTarget.tvOS:
+                    PlayerSettings.tvOS.buildNumber = UpdateVersionNumber(PlayerSettings.tvOS.buildNumber);
+                    break;
+                case BuildTarget.Switch:
+                    PlayerSettings.Switch.releaseVersion = UpdateVersionNumber(PlayerSettings.Switch.releaseVersion);
+                    PlayerSettings.Switch.displayVersion = UpdateVersionNumber(PlayerSettings.Switch.displayVersion);
+                    break;
+                case BuildTarget.Lumin:
+                    PlayerSettings.Lumin.versionName = UpdateVersionNumber(PlayerSettings.Lumin.versionName);
+                    break;
+                case BuildTarget.NoTarget:
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    break;
+                default:
+                    Debug.Log("Build Versions | CG: Unable to increment build number, platform not recognised!");
+                    break;
+            }
+        }
+
+
+
+        private static string UpdateVersionNumber(string input, int valueToIncrement = 2)
+        {
+            // to update major or minor version, manually set it in Edit>Project Settings>Player>Other Settings>Version
+            var versionParts = input.Split('.');
+            
+            // If the build version format is incorrect... complain about it and don't increment the number...
+            if (versionParts.Length != 3 || !int.TryParse(versionParts[valueToIncrement], out var buildNumber))
+            {
+                Debug.LogError(
+                    "Build Versions | CG: Unable to update player settings build version, please make sure you are using a major, minor, patch (x.x.x) style format in your player settings");
+                return input;
+            }
+            
+            // Increments the build number by 1 on the build/patch number (major and minor can be edited with the tools menu)
+            versionParts[valueToIncrement] = (buildNumber + 1).ToString();
+
+            return $"{versionParts[0]}.{versionParts[1]}.{versionParts[2]}";
         }
 
 
@@ -138,7 +249,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             var _info = GetBuildInformation();
             if (_info == null)
             {
-                Debug.LogError("Build Incrementer: Unable to update data as it was not found in the project!");
+                Debug.LogError("Build Versions | CG: Unable to update data as it was not found in the project!");
                 return;
             }
             _info.IncrementBuildNumber();
@@ -150,9 +261,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         
 
-        private static BuildInformation GetBuildInformation()
+        public static BuildInformation GetBuildInformation()
         {
-            var _asset = AssetDatabase.FindAssets("t:buildinformation", null);
+            var _asset = AssetDatabase.FindAssets(BuildInfoObjectFilter, null);
 
             if (_asset.Length > 0)
             {
@@ -162,27 +273,70 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
                 return _loadedSettings;
             }
-            
-            Debug.LogError("Build Incrementer: No Build Information Found In Project!");
-            return null;
+            else
+            {
+                AssetDatabase.CreateAsset(CreateInstance(typeof(BuildInformation)), $"Assets/Build Information.asset");
+                AssetDatabase.Refresh();
+                
+                _asset = AssetDatabase.FindAssets(BuildInfoObjectFilter, null);
+
+                if (_asset.Length > 0)
+                {
+                    var _path = AssetDatabase.GUIDToAssetPath(_asset[0]);
+                    var _loadedSettings =
+                        (BuildInformation)AssetDatabase.LoadAssetAtPath(_path, typeof(BuildInformation));
+
+                    return _loadedSettings;
+                }
+                
+                Debug.LogError("Build Versions | CG: No Build Information Found In Project!");
+                return null;
+            }
         }
 
 
-        private static BuildVersionSettings GetBuildVersionSettings()
+        public static BuildVersionOptions GetBuildVersionSettings(bool showLog = true)
         {
-            var _asset = AssetDatabase.FindAssets("t:buildversionsettings", null);
+            var _asset = AssetDatabase.FindAssets(OptionsTypeFilter, null);
 
             if (_asset.Length > 0)
             {
                 var _path = AssetDatabase.GUIDToAssetPath(_asset[0]);
                 var _loadedSettings =
-                    (BuildVersionSettings)AssetDatabase.LoadAssetAtPath(_path, typeof(BuildVersionSettings));
+                    (BuildVersionOptions)AssetDatabase.LoadAssetAtPath(_path, typeof(BuildVersionOptions));
 
                 return _loadedSettings;
             }
             
-            Debug.LogError("Build Incrementer: No Build Version Settings Found In Project!");
+            if (showLog)
+                Debug.LogError("Build Versions | CG: No Build Version Options Found In Project!");
+            
             return null;
+        }
+
+
+        public static void CheckOrSpawn()
+        {
+            var _options = AssetDatabase.FindAssets(OptionsTypeFilter, null);
+            var _info = AssetDatabase.FindAssets(BuildInfoObjectFilter, null);
+
+            if (_options.Length <= 0)
+                CreateOptions();
+
+            if (_info.Length <= 0)
+                CreateInformation();
+        }
+
+        private static void CreateOptions()
+        {
+            AssetDatabase.CreateAsset(CreateInstance(typeof(BuildVersionOptions)), $"Assets/Build Version Options.asset");
+            AssetDatabase.Refresh();
+        }
+        
+        private static void CreateInformation()
+        {
+            AssetDatabase.CreateAsset(CreateInstance(typeof(BuildInformation)), $"Assets/Build Information.asset");
+            AssetDatabase.Refresh();
         }
     }
 }
