@@ -29,6 +29,8 @@ namespace CarterGames.Assets.BuildVersions.Editor
     [CustomEditor(typeof(BuildVersionOptions))]
     public class BuildVersionsOptionsEditor : UnityEditor.Editor
     {
+        private BuildInformation info;
+        
         private SerializedProperty assetActive;
         private SerializedProperty buildUpdateTime;
         private SerializedProperty updatePlayerSettingsVersion;
@@ -39,6 +41,8 @@ namespace CarterGames.Assets.BuildVersions.Editor
             assetActive = serializedObject.FindProperty("assetActive");
             buildUpdateTime = serializedObject.FindProperty("buildUpdateTime");
             updatePlayerSettingsVersion = serializedObject.FindProperty("updateSystematic");
+
+            info = BuildVersionsManager.GetBuildInformation();
         }
 
         public override void OnInspectorGUI()
@@ -84,7 +88,25 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private void ShowValues()
         {
             EditorGUILayout.PropertyField(assetActive);
+
+            EditorGUI.BeginChangeCheck();
+            
+            var _oldSetting = buildUpdateTime.intValue;
             EditorGUILayout.PropertyField(buildUpdateTime);
+            
+            if (EditorGUI.EndChangeCheck() && buildUpdateTime.intValue != _oldSetting)
+            {
+                switch (_oldSetting)
+                {
+                    case 0 when buildUpdateTime.intValue.Equals(1):
+                        info.BuildNumber++;
+                        break;
+                    case 1 when buildUpdateTime.intValue.Equals(0):
+                        info.BuildNumber--;
+                        break;
+                }
+            }
+
             EditorGUILayout.PropertyField(updatePlayerSettingsVersion);
         }
         

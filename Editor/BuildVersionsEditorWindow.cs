@@ -32,6 +32,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private Color defaultTextColour;
         
         private BuildVersionOptions options;
+        private BuildInformation info;
         private SerializedObject obj;
 
         private SerializedProperty activeAsset;
@@ -56,6 +57,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             if (options == null)
                 BuildVersionsManager.CheckOrSpawn();
             
+            info = BuildVersionsManager.GetBuildInformation();
             options = BuildVersionsManager.GetBuildVersionSettings();
             if (options == null) return;
             obj = new SerializedObject(options);
@@ -96,8 +98,25 @@ namespace CarterGames.Assets.BuildVersions.Editor
             EditorGUILayout.HelpBox(
                 "Defines when the build number get incremented. Either when the build is started or finished...",
                 MessageType.None);
+            
+            EditorGUI.BeginChangeCheck();
+            
+            var _oldSetting = buildUpdateTime.intValue;
             EditorGUILayout.PropertyField(buildUpdateTime, GUIContent.none);
-
+            
+            if (EditorGUI.EndChangeCheck() && buildUpdateTime.intValue != _oldSetting)
+            {
+                switch (_oldSetting)
+                {
+                    case 0 when buildUpdateTime.intValue.Equals(1):
+                        info.BuildNumber++;
+                        break;
+                    case 1 when buildUpdateTime.intValue.Equals(0):
+                        info.BuildNumber--;
+                        break;
+                }
+            }
+            
             GUILayout.Space(5f);
 
             GUI.color = TitleColour;

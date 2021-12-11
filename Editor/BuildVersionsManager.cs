@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /*
  * 
@@ -37,7 +40,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         
         [MenuItem("Tools/Build Versions | CG/Type/Set To Prototype", priority = 1)]
-        public static void SetToPrePrototype() => SetBuildType("Prototype");
+        public static void SetToPrototype() => SetBuildType("Prototype");
+        
+        [MenuItem("Tools/Build Versions | CG/Type/Set To Development", priority = 1)]
+        public static void SetToDevelopment() => SetBuildType("Development");
         
         [MenuItem("Tools/Build Versions | CG/Type/Alpha/Set To Pre-Alpha", priority = 2)]
         public static void SetToPreAlpha() => SetBuildType("Pre-Alpha");
@@ -83,7 +89,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         [MenuItem("Tools/Build Versions | CG/Version Number/Increment Build")]
         public static void IncrementVersionBuild() => CallUpdateVersionNumber(EditorUserBuildSettings.activeBuildTarget);
-        
+
 
         private static void SetBuildType(string value)
         {
@@ -141,6 +147,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         public void OnPreprocessBuild(BuildReport report)
         {
             CheckOrSpawn();
+            UpdateBuildDate();
             var _settings = GetBuildVersionSettings();
             if (!_settings.assetActive) return;
             if (_settings.buildUpdateTime != BuildIncrementTime.AnyBuild) return;
@@ -172,49 +179,49 @@ namespace CarterGames.Assets.BuildVersions.Editor
             switch (t)
             {
                 case BuildTarget.StandaloneOSX:
-                    PlayerSettings.macOS.buildNumber = UpdateVersionNumber(PlayerSettings.macOS.buildNumber);
+                    PlayerSettings.macOS.buildNumber = UpdateVersionNumber(PlayerSettings.macOS.buildNumber, valueToEdit);
                     break;
                 case BuildTarget.StandaloneWindows:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     break;
                 case BuildTarget.iOS:
-                    PlayerSettings.iOS.buildNumber = UpdateVersionNumber(PlayerSettings.iOS.buildNumber);
+                    PlayerSettings.iOS.buildNumber = UpdateVersionNumber(PlayerSettings.iOS.buildNumber, valueToEdit);
                     break;
                 case BuildTarget.Android:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     if (GetBuildVersionSettings().androidUpdateBundleCode)
                         PlayerSettings.Android.bundleVersionCode++;
                     break;
                 case BuildTarget.StandaloneWindows64:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     break;
                 case BuildTarget.WebGL:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     break;
                 case BuildTarget.WSAPlayer:
-                    PlayerSettings.WSA.packageVersion = new Version(UpdateVersionNumber(PlayerSettings.WSA.packageVersion.ToString()));
+                    PlayerSettings.WSA.packageVersion = new Version(UpdateVersionNumber(PlayerSettings.WSA.packageVersion.ToString(), valueToEdit));
                     break;
                 case BuildTarget.StandaloneLinux64:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     break;
                 case BuildTarget.PS4:
-                    PlayerSettings.PS4.appVersion = UpdateVersionNumber(PlayerSettings.PS4.appVersion);
+                    PlayerSettings.PS4.appVersion = UpdateVersionNumber(PlayerSettings.PS4.appVersion, valueToEdit);
                     break;
                 case BuildTarget.XboxOne:
-                    PlayerSettings.XboxOne.Version = UpdateVersionNumber(PlayerSettings.XboxOne.Version);
+                    PlayerSettings.XboxOne.Version = UpdateVersionNumber(PlayerSettings.XboxOne.Version, valueToEdit);
                     break;
                 case BuildTarget.tvOS:
-                    PlayerSettings.tvOS.buildNumber = UpdateVersionNumber(PlayerSettings.tvOS.buildNumber);
+                    PlayerSettings.tvOS.buildNumber = UpdateVersionNumber(PlayerSettings.tvOS.buildNumber, valueToEdit);
                     break;
                 case BuildTarget.Switch:
-                    PlayerSettings.Switch.releaseVersion = UpdateVersionNumber(PlayerSettings.Switch.releaseVersion);
-                    PlayerSettings.Switch.displayVersion = UpdateVersionNumber(PlayerSettings.Switch.displayVersion);
+                    PlayerSettings.Switch.releaseVersion = UpdateVersionNumber(PlayerSettings.Switch.releaseVersion, valueToEdit);
+                    PlayerSettings.Switch.displayVersion = UpdateVersionNumber(PlayerSettings.Switch.displayVersion, valueToEdit);
                     break;
                 case BuildTarget.Lumin:
-                    PlayerSettings.Lumin.versionName = UpdateVersionNumber(PlayerSettings.Lumin.versionName);
+                    PlayerSettings.Lumin.versionName = UpdateVersionNumber(PlayerSettings.Lumin.versionName, valueToEdit);
                     break;
                 case BuildTarget.NoTarget:
-                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion);
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, valueToEdit);
                     break;
                 default:
                     Debug.Log("Build Versions | CG: Unable to increment build number, platform not recognised!");
@@ -240,6 +247,19 @@ namespace CarterGames.Assets.BuildVersions.Editor
             // Increments the build number by 1 on the build/patch number (major and minor can be edited with the tools menu)
             versionParts[valueToIncrement] = (buildNumber + 1).ToString();
 
+            // Resets the values to 0 where applicable....
+            switch (valueToIncrement)
+            {
+                case 0:
+                    versionParts[1] = 0.ToString();
+                    versionParts[2] = 0.ToString();
+                    break;
+                case 1:
+                    versionParts[2] = 0.ToString();
+                    break;
+            }
+
+            // returns the result...
             return $"{versionParts[0]}.{versionParts[1]}.{versionParts[2]}";
         }
 
@@ -253,6 +273,23 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 return;
             }
             _info.IncrementBuildNumber();
+            _info.SetBuildDate();
+            EditorUtility.SetDirty(_info);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+
+        private void UpdateBuildDate()
+        {
+            var _info = GetBuildInformation();
+            if (_info == null)
+            {
+                Debug.LogError("Build Versions | CG: Unable to update data as it was not found in the project!");
+                return;
+            }
+
+            if (_info.BuildDate == DateTime.Now.Date.ToString("d")) return;
             _info.SetBuildDate();
             EditorUtility.SetDirty(_info);
             AssetDatabase.SaveAssets();
