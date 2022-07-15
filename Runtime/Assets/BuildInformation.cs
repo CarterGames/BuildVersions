@@ -1,30 +1,10 @@
 ﻿using System;
 using UnityEngine;
 
-/*
- * 
- *  Build Versions
- *							  
- *	Build Information
- *      The scriptable object that contains the data about the current build version...
- *			
- *  Written by:
- *      Jonathan Carter
- *
- *  Published By:
- *      Carter Games
- *      E: hello@carter.games
- *      W: https://www.carter.games
- *		
- *  Version: 1.0.0
- *	Last Updated: 09/10/2021 (d/m/y)							
- * 
- */
-
 namespace CarterGames.Assets.BuildVersions
 {
     [CreateAssetMenu(fileName = "Build Information", menuName = "Carter Games/Build Versions | CG/New Build Information", order = 0)]
-    public class BuildInformation : ScriptableObject
+    public class BuildInformation : BuildVersionsAsset
     {
         [SerializeField, HideInInspector] private string buildType;
         [SerializeField, HideInInspector] private string buildDate;
