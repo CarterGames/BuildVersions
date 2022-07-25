@@ -2,8 +2,20 @@
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
-    public class ScriptableObjectUpdater : IBuildVersionUpdate
+    /// <summary>
+    /// Updates the scriptable object build number...
+    /// </summary>
+    public sealed class ScriptableObjectUpdater : IBuildUpdater
     {
+        //
+        //
+        //  IBuildUpdater Implementation 
+        //
+        //
+
+
+        public int UpdateOrder => 0;
+
         public void OnBuildVersionIncremented(BuildTarget buildTarget)
         {
             var info = BuildVersionsEditorUtil.BuildInformation;

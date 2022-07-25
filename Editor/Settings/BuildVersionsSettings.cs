@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEngine;
 
-
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     public class BuildVersionsSettings : MonoBehaviour
@@ -47,7 +46,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
         private static void DrawLogoGroup()
         {
-            var managerHeader = BuildVersionsEditorUtil.ManagerHeader;
+            if (!BuildVersionsEditorUtil.HasFile("BuildVersionsEditorHeader")) return;
+            
+            var managerHeader = BuildVersionsEditorUtil.BannerLogo;
             
             GUILayout.Space(5f);
                     
@@ -167,15 +168,11 @@ namespace CarterGames.Assets.BuildVersions.Editor
             if (GUILayout.Button("Asset Store", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://assetstore.unity.com/publishers/43356");
 
-            GUI.enabled = false;
-            
             if (GUILayout.Button("Documentation", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://carter.games/buildversions/docs");
 
             if (GUILayout.Button("Change Log", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://carter.games/buildversions/changelog");
-            
-            GUI.enabled = true;
 
             EditorGUILayout.EndHorizontal();
 
@@ -192,10 +189,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             EditorGUILayout.EndHorizontal();
 
-            var carterGamesBanner = BuildVersionsEditorUtil.CarterGamesBanner;
-
-            if (carterGamesBanner != null)
+            if (BuildVersionsEditorUtil.HasFile("CarterGamesBanner"))
             {
+                var carterGamesBanner = BuildVersionsEditorUtil.CarterGamesBanner;
+
                 GUI.contentColor = new Color(1, 1, 1, .75f);
 
                 if (GUILayout.Button(carterGamesBanner, GUILayout.MaxHeight(40)))

@@ -1,34 +1,53 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-
 namespace CarterGames.Assets.BuildVersions.Editor
 {
+    /// <summary>
+    /// An editor override for the build options asset...
+    /// </summary>
     [CustomEditor(typeof(BuildVersionOptions))]
     public class BuildVersionsOptionsEditor : UnityEditor.Editor
     {
+        //
+        //
+        //  Fields
+        //
+        //
+        
         private BuildInformation info;
         
         private SerializedProperty assetStatus;
-        private SerializedProperty shouldUpdate;
         private SerializedProperty buildUpdateTime;
         private SerializedProperty updatePlayerSettingsVersion;
+        private SerializedProperty lastBuildNumber;
+        private SerializedProperty androidCodeSetting;
 
         private Color defaultTextColor;
         private Color defaultBackgroundColor;
         
+        
+        //
+        //
+        //  Unity Methods
+        //
+        //
+        
+        
         private void OnEnable()
         {
-            assetStatus = serializedObject.FindProperty("assetStatus");
-            shouldUpdate = serializedObject.FindProperty("shouldUpdate");
-            buildUpdateTime = serializedObject.FindProperty("buildUpdateTime");
-            updatePlayerSettingsVersion = serializedObject.FindProperty("updateSystematic");
-
             info = BuildVersionsEditorUtil.BuildInformation;
             
+            assetStatus = serializedObject.FindProperty("assetStatus");
+            buildUpdateTime = serializedObject.FindProperty("buildUpdateTime");
+            updatePlayerSettingsVersion = serializedObject.FindProperty("updateSystematic");
+            lastBuildNumber = serializedObject.FindProperty("lastSystematicNumber");
+            androidCodeSetting = serializedObject.FindProperty("androidUpdateBundleCode");
+
             defaultTextColor = GUI.color;
             defaultBackgroundColor = GUI.backgroundColor;
         }
+        
 
         public override void OnInspectorGUI()
         {
@@ -45,47 +64,57 @@ namespace CarterGames.Assets.BuildVersions.Editor
             GUI.color = defaultTextColor;
 
             GUILayout.Space(2.5f);
-            GUI.enabled = false;
+            //GUI.enabled = false;
             ShowValues();
-            GUI.enabled = true;
-            GUILayout.Space(2.5f);
+            //GUI.enabled = true;
+            GUILayout.Space(5f);
             
+            DrawLastVersionNumber();
+            DrawAndroidBundleCodeSection();
+
             EditorGUILayout.EndVertical();
 
-            GUI.backgroundColor = BuildVersionsEditorUtil.TitleColour;
-            if (GUILayout.Button("Edit Settings", GUILayout.Height(22.5f)))
-                SettingsService.OpenProjectSettings("Project/Carter Games/Build Versions");
-            GUI.backgroundColor = defaultBackgroundColor;
-            
             serializedObject.ApplyModifiedProperties();
             serializedObject.Update();
         }
 
 
+        //
+        //
+        //  Methods
+        //
+        //
+        
+
+        /// <summary>
+        /// Shows the logo for the asset if possible...
+        /// </summary>
         private void ShowLogo()
         {
-            GUILayout.Space(5f);
+            if (!BuildVersionsEditorUtil.HasFile("BuildVersionsIcon")) return;
             
+            GUILayout.Space(5f);
+
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
             // Shows either the Carter Games Logo or an alternative for if the icon is deleted/not included when you import the package
-            // Note: if you are using an older version of the asset, the directory/name of the logo may not match this and therefore will display the text title only
-            if (BuildVersionsEditorUtil.Logo)
-            {
-                if (GUILayout.Button(BuildVersionsEditorUtil.Logo, GUIStyle.none, GUILayout.Width(50), GUILayout.Height(50)))
-                    GUI.FocusControl(null);
-            }
-
+            if (GUILayout.Button(BuildVersionsEditorUtil.Logo, GUIStyle.none, GUILayout.Width(50), GUILayout.Height(50)))
+                GUI.FocusControl(null);
+                
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
         }
 
-
+        
+        /// <summary>
+        /// Shows the values for the asset options...
+        /// </summary>
         private void ShowValues()
         {
             EditorGUILayout.PropertyField(assetStatus);
-            EditorGUILayout.PropertyField(shouldUpdate);
+
+            GUI.enabled = assetStatus.intValue != 0;
 
             EditorGUI.BeginChangeCheck();
             
@@ -106,6 +135,51 @@ namespace CarterGames.Assets.BuildVersions.Editor
             }
 
             EditorGUILayout.PropertyField(updatePlayerSettingsVersion);
+        }
+        
+        
+        /// <summary>
+        /// Draws the last version number section...
+        /// </summary>
+        private void DrawLastVersionNumber()
+        {
+            GUI.color = BuildVersionsEditorUtil.TitleColour;
+            EditorGUILayout.LabelField("Cached Values", EditorStyles.boldLabel);
+            GUI.color = defaultTextColor;
+
+            //GUILayout.Space(2.5f);
+            GUI.enabled = false;
+
+            if (lastBuildNumber.stringValue.Length <= 0)
+                lastBuildNumber.stringValue = PlayerSettings.bundleVersion;
+
+            EditorGUILayout.PropertyField(lastBuildNumber);
+
+            GUI.enabled = true;
+            GUILayout.Space(2.5f);
+        }
+        
+        
+        /// <summary>
+        /// Draws the android bundle code section...
+        /// </summary>
+        private void DrawAndroidBundleCodeSection()
+        {
+#if UNITY_ANDROID
+            GUI.color = BuildVersionsEditorUtil.TitleColour;
+            EditorGUILayout.LabelField("Android", EditorStyles.boldLabel);
+            GUI.color = defaultTextColor;
+
+            //GUILayout.Space(2.5f);
+            //GUI.enabled = false;
+
+            GUI.enabled = assetStatus.intValue != 0;
+            
+            EditorGUILayout.PropertyField(androidCodeSetting, new GUIContent("Bundle Code Update"));
+
+            //GUI.enabled = true;
+            GUILayout.Space(2.5f);
+#endif
         }
     }
 }
