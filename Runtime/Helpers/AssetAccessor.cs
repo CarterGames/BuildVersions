@@ -4,11 +4,31 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions
 {
+    /// <summary>
+    /// A helper class to access the build version assets at runtime...
+    /// </summary>
     public static class AssetAccessor
     {
+        //
+        //
+        //  Fields
+        //
+        //
+        
+        // a cache of all the assets found...
         private static BuildVersionsAsset[] assets;
 
-
+        
+        //
+        //
+        //  Properties
+        //
+        //
+        
+        
+        /// <summary>
+        /// Gets all the assets from the build versions asset...
+        /// </summary>
         private static IEnumerable<BuildVersionsAsset> Assets
         {
             get
@@ -19,7 +39,14 @@ namespace CarterGames.Assets.BuildVersions
             }
         }
 
-
+        
+        //
+        //
+        //  Methods
+        //
+        //
+        
+        
         /// <summary>
         /// Gets the Build Versions Asset requested...
         /// </summary>

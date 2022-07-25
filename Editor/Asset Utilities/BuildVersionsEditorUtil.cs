@@ -6,21 +6,42 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
+    /// <summary>
+    /// A helper class to help get things for the editor to use...
+    /// </summary>
     public static class BuildVersionsEditorUtil
     {
-        private static readonly string DefaultBuildInfoPath = "Assets/Resources/Build Versions/Build Information.asset";
-        private static readonly string DefaultBuildOptionsPath = "Assets/Resources/Build Versions/Build Options.asset";
+        //
+        //
+        //  Fields
+        //
+        //
+        
+        // The default paths & filters to find the scriptable object files needed...
+        private static readonly string DefaultBuildInfoPath = "Assets/Resources/Carter Games/Build Versions/Build Information.asset";
+        private static readonly string DefaultBuildOptionsPath = "Assets/Resources/Carter Games/Build Versions/Build Options.asset";
         private static readonly string BuildInfoObjectFilter = "t:buildinformation";
         private static readonly string OptionsTypeFilter = "t:buildversionoptions";
-        
+
+        // The colour for the titles in the editor...
         public static readonly Color TitleColour = new Color32(104, 206, 94, 255);
 
+        // The cached values of the property getters...
         private static Texture2D cachedLogoImg;
-        private static Texture2D cachedManagerHeaderImg;
+        private static Texture2D cachedBannerLogoImg;
         private static Texture2D cachedCarterGamesBannerImg;
         private static BuildInformation cachedBuildInformation;
         private static BuildVersionOptions cachedBuildOptions;
 
+        //
+        //
+        //  Properties
+        //
+        //
+        
+        /// <summary>
+        /// Gets the asset logo...
+        /// </summary>
         public static Texture2D Logo
         {
             get
@@ -31,16 +52,25 @@ namespace CarterGames.Assets.BuildVersions.Editor
             }
         }
         
-        public static Texture2D ManagerHeader
+        
+        /// <summary>
+        /// Gets the asset logo
+        /// </summary>
+        public static Texture2D BannerLogo
         {
             get
             {
-                if (cachedManagerHeaderImg != null) return cachedManagerHeaderImg;
-                cachedManagerHeaderImg = (Texture2D) GetFile<Texture2D>("BuildVersionsEditorHeader");
-                return cachedManagerHeaderImg;
+                if (cachedBannerLogoImg != null) return cachedBannerLogoImg;
+                cachedBannerLogoImg = (Texture2D) GetFile<Texture2D>("BuildVersionsEditorHeader");
+                return cachedBannerLogoImg;
             }
         }
-        
+
+
+
+        /// <summary>
+        /// Gets the Carter Games Banner Logo...
+        /// </summary>
         public static Texture2D CarterGamesBanner
         {
             get
@@ -51,6 +81,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
             }
         }
         
+        
+        /// <summary>
+        /// Gets the build information asset (or makes one if needed)...
+        /// </summary>
         public static BuildInformation BuildInformation
         {
             get
@@ -70,6 +104,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
             }
         }
         
+        
+        /// <summary>
+        /// Gets the build version options asset (or makes one if needed)...
+        /// </summary>
         public static BuildVersionOptions BuildOptions
         {
             get
@@ -87,25 +125,40 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 return cachedBuildOptions;
             }
         }
+        
 
+        /// <summary>
+        /// Gets the name of the class entered...
+        /// </summary>
+        /// <typeparam name="T">The type to get..</typeparam>
+        /// <returns>The name of said class</returns>
+        public static string GetClassName<T>() => typeof(T).Name;
+
+        
+        //
+        //
+        //  Methods
+        //
+        //
+        
         
         /// <summary>
         /// Checks to see whether or not a file of said type exists already (Editor Only)
         /// </summary>
-        /// <param name="filter"></param>
-        /// <returns></returns>
-        private static bool HasFile(string filter)
+        /// <param name="filter">The filter to search for...</param>
+        /// <returns>If the file was found.</returns>
+        public static bool HasFile(string filter)
         {
             return AssetDatabase.FindAssets(filter, null).Length > 0;
         }
-
+        
         
         /// <summary>
         /// Creates a file of the type requested...
         /// </summary>
         /// <param name="path">The path to create the file in (Editor Only)</param>
         /// <typeparam name="T">The type the file is</typeparam>
-        private static void CreateFile<T>(string path)
+        public static void CreateFile<T>(string path)
         {
             var instance = ScriptableObject.CreateInstance(typeof(T));
 
@@ -142,9 +195,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         
         /// <summary>
-        /// Gets all the IBuildVersionUpdating implementations and returns the result (Editor Only)
+        /// Gets all the interface implementations and returns the result (Editor Only)
         /// </summary>
-        /// <returns>A Array of IBuildVersionUpdates</returns>
+        /// <returns>An Array of the interface type</returns>
         public static T[] GetAllInterfacesOfType<T>()
         {
             var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -152,6 +205,17 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 .Where(x => x.IsClass && typeof(T).IsAssignableFrom(x));
 
             return types.Select(type => (T)Activator.CreateInstance(type)).ToArray();
+        }
+        
+        
+        /// <summary>
+        /// Gets the width of the text entered...
+        /// </summary>
+        /// <param name="text">The text the gauge</param>
+        /// <returns>The width of the text entered</returns>
+        public static float TextWidth(string text)
+        {
+            return GUI.skin.label.CalcSize(new GUIContent(text)).x;
         }
     }
 }

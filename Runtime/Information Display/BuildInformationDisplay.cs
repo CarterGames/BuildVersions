@@ -4,8 +4,19 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions
 {
+    /// <summary>
+    /// A display script to show the build numbers in text form...
+    /// </summary>
     public abstract class BuildInformationDisplay : MonoBehaviour
     {
+        //
+        //
+        //  Fields
+        //
+        //
+        
+        // The strings to look out for when parsing the input for the display...
+        private const string TypeString = "bv_type";
         private const string NumberString = "bv_number";
         private const string DateString = "bv_date";
         private const string DayString = "bv_day";
@@ -17,19 +28,39 @@ namespace CarterGames.Assets.BuildVersions
         private const string SystematicMajorString = "bv_systematic_major";
         private const string NewLine = "newline";
         
+        
         /// <summary>
         /// The string that is used to format the display...
         /// </summary>
         [Tooltip("The string to send to the display text. Use { } to define variables in the string.")]
         [SerializeField, TextArea(1, 5)] protected string displayFormat = "#{bv_number}";
 
+        
+        // The information to read...
         private BuildInformation buildInformation;
+        
+        
+        // the string builder...
         private readonly StringBuilder builder = new StringBuilder();
 
-
+        
+        //
+        //
+        //  Unity Methods
+        //
+        //
+        
+        
         private void OnEnable() => Initialise();
 
+        
+        //
+        //
+        //  Methods
+        //
+        //
 
+        
         /// <summary>
         /// Initialises the display script...
         /// </summary>
@@ -64,6 +95,9 @@ namespace CarterGames.Assets.BuildVersions
             {
                 switch (s.ToLower())
                 {
+                    case TypeString:
+                        builder.Append(buildInformation.BuildType);
+                        break;
                     case NumberString:
                         builder.Append(buildInformation.BuildNumber);
                         break;

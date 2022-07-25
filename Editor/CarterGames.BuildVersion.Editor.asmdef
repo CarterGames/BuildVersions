@@ -1,7 +1,11 @@
 {
-    "name": "CarterGames.BuildVersions",
-    "references": [],
-    "includePlatforms": [],
+    "name": "CarterGames.BuildVersion.Editor",
+    "references": [
+        "GUID:f693b8824d24be84681200cf06cccf09"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
