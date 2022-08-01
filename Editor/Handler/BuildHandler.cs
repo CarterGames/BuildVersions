@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
+    /// <summary>
+    /// Handles the build dialogue results...
+    /// </summary>
     public static class BuildHandler
     {
         /// <summary>
