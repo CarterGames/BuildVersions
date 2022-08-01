@@ -167,19 +167,18 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private void DrawAndroidBundleCodeSection()
         {
 #if UNITY_ANDROID
-            GUI.enabled = false;
-
             GUI.color = BuildVersionsEditorUtil.TitleColour;
             EditorGUILayout.LabelField("Android", EditorStyles.boldLabel);
             GUI.color = defaultTextColor;
 
-            GUI.enabled = assetStatus.intValue != 0;
-            
+            GUI.enabled = false;
+
             EditorGUILayout.PropertyField(androidCodeSetting, new GUIContent("Bundle Code Update"));
 
-            GUILayout.Space(2.5f);
-            
             GUI.enabled = true;
+
+
+            GUILayout.Space(2.5f);
 #endif
         }
         
