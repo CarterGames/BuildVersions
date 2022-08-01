@@ -4,13 +4,19 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
+    /// <summary>
+    /// Handles the settings window for the asset...
+    /// </summary>
     public class BuildVersionsSettings : MonoBehaviour
     {
-        private static Color defaultTextColour;
-        
-        private static SerializedObject options;
+        private static Color defaultTextColour;             // The default color of gui.color...
+        private static SerializedObject options;            // The options asset to edit...
         
 
+        /// <summary>
+        /// Creates the settings window to show info...
+        /// </summary>
+        /// <returns></returns>
         [SettingsProvider]
         public static SettingsProvider BuildVersionsSettingsProvider()
         {
@@ -44,6 +50,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
 
 
+        /// <summary>
+        /// Draws the logo of the asset if possible...
+        /// </summary>
         private static void DrawLogoGroup()
         {
             if (!BuildVersionsEditorUtil.HasFile("BuildVersionsEditorHeader")) return;
@@ -70,6 +79,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
 
 
+        /// <summary>
+        /// Draws the info of the asset...
+        /// </summary>
         private static void DrawInfo()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -87,6 +99,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
         
 
+        /// <summary>
+        /// Draws the options section of the asset...
+        /// </summary>
         private static void DrawOptions()
         {
             EditorGUILayout.BeginVertical("HelpBox");
@@ -105,12 +120,18 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
 
 
+        /// <summary>
+        /// Draws the enable asset option...
+        /// </summary>
         private static void DrawEnableAsset()
         {
             EditorGUILayout.PropertyField(options.FindProperty("assetStatus"), new GUIContent("Asset Status"));
         }
 
 
+        /// <summary>
+        /// Draws the update time option...
+        /// </summary>
         private static void DrawUpdateBuildTime()
         {
             EditorGUI.BeginChangeCheck();
@@ -136,12 +157,22 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
         
 
+        /// <summary>
+        /// Draws the systematic option...
+        /// </summary>
         private static void DrawSystematic()
         {
             EditorGUILayout.PropertyField(options.FindProperty("updateSystematic"), new GUIContent("Use Systematic Version"));
+
+            GUI.enabled = false;
+            EditorGUILayout.PropertyField(options.FindProperty("lastSystematicNumber"), new GUIContent("Cached Version Number"));
+            GUI.enabled = true;
         }
 
 
+        /// <summary>
+        /// Draws the android bundle code option...
+        /// </summary>
         private static void DrawAndroidBundle()
         {
             if (!EditorUserBuildSettings.activeBuildTarget.Equals(BuildTarget.Android)) return;
@@ -161,6 +192,9 @@ namespace CarterGames.Assets.BuildVersions.Editor
         }
 
 
+        /// <summary>
+        /// Draws the help buttons...
+        /// </summary>
         private static void DrawButton()
         {
             EditorGUILayout.BeginHorizontal();
@@ -169,7 +203,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 Application.OpenURL("https://assetstore.unity.com/publishers/43356");
 
             if (GUILayout.Button("Documentation", GUILayout.Height(30), GUILayout.MinWidth(100)))
-                Application.OpenURL("https://carter.games/buildversions/docs");
+                Application.OpenURL("https://carter.games/buildversions");
 
             if (GUILayout.Button("Change Log", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://carter.games/buildversions/changelog");

@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
+    /// <summary>
+    /// Handles the updating of the build numbers for the asset...
+    /// </summary>
     public class BuildVersionsManager : UnityEditor.Editor, IPreprocessBuildWithReport, IPostprocessBuildWithReport
     {
         //
