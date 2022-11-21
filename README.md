@@ -1,7 +1,12 @@
 ![2022 1 - BV Banner - 1200x630](https://user-images.githubusercontent.com/33253710/166158716-bb68ba09-e683-4e7b-b5bf-9110c4273d58.jpg)
 
 <b>Build Versions</b> is a <b>FREE</b> build version updater tool for Unity that keeps your track of your projects versioning so you don't have to. 
-> Version 1.1.0
+
+## Badges
+![CodeFactor](https://www.codefactor.io/repository/github/cartergames/BuildVersions/badge?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/CarterGames/BuildVersions/total?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/CarterGames/BuildVersions?style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/CarterGames/BuildVersions?style=for-the-badge)
 
 ## Key Features
 - Automatic build information updating.
