@@ -113,7 +113,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     
             DrawEnableAsset();
             DrawUpdateBuildTime();
-            DrawSystematic();
+            Drawsemantic();
                     
             GUILayout.Space(2.5f);
             EditorGUILayout.EndVertical();
@@ -158,14 +158,14 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
 
         /// <summary>
-        /// Draws the systematic option...
+        /// Draws the semantic option...
         /// </summary>
-        private static void DrawSystematic()
+        private static void Drawsemantic()
         {
-            EditorGUILayout.PropertyField(options.FindProperty("updateSystematic"), new GUIContent("Use Systematic Version"));
+            EditorGUILayout.PropertyField(options.FindProperty("updateSemantic"), new GUIContent("Use Semantic Version"));
 
             GUI.enabled = false;
-            EditorGUILayout.PropertyField(options.FindProperty("lastSystematicNumber"), new GUIContent("Cached Version Number"));
+            EditorGUILayout.PropertyField(options.FindProperty("lastSemanticNumber"), new GUIContent("Cached Version Number"));
             GUI.enabled = true;
         }
 
@@ -201,12 +201,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             if (GUILayout.Button("Asset Store", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://assetstore.unity.com/publishers/43356");
+            
+            if (GUILayout.Button("GitHub", GUILayout.Height(30), GUILayout.MinWidth(100)))
+                Application.OpenURL("https://github.com/CarterGames/BuildVersions");
 
             if (GUILayout.Button("Documentation", GUILayout.Height(30), GUILayout.MinWidth(100)))
                 Application.OpenURL("https://carter.games/buildversions");
-
-            if (GUILayout.Button("Change Log", GUILayout.Height(30), GUILayout.MinWidth(100)))
-                Application.OpenURL("https://carter.games/buildversions/changelog");
 
             EditorGUILayout.EndHorizontal();
 

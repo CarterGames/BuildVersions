@@ -59,7 +59,7 @@ namespace CarterGames.Assets.BuildVersions
         /// <summary>
         /// Get the current version number
         /// </summary>
-        public string SystematicVersionNumber => Application.version;
+        public string semanticVersionNumber => Application.version;
 
 
         /// <summary>

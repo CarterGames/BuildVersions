@@ -17,10 +17,10 @@ namespace CarterGames.Assets.BuildVersions
         // main settings...
         public AssetUsageType assetStatus = AssetUsageType.Enabled;
         public BuildIncrementTime buildUpdateTime = BuildIncrementTime.OnlySuccessfulBuilds;
-        public AssetUsageType updateSystematic = AssetUsageType.PromptMe;
+        public AssetUsageType updateSemantic = AssetUsageType.PromptMe;
         
         // cached values...
-        public string lastSystematicNumber;
+        public string lastSemanticNumber;
         
         // Only applicable if using the android build platform
         public AssetUsageType androidUpdateBundleCode = AssetUsageType.Disabled;
@@ -35,10 +35,10 @@ namespace CarterGames.Assets.BuildVersions
         /// <summary>
         /// Gets/Sets the last version number the asset has saved
         /// </summary>
-        public string LastSystematicVersionNumberSaved
+        public string LastSemanticVersionNumberSaved
         {
-            get => lastSystematicNumber;
-            set => lastSystematicNumber = value;
+            get => lastSemanticNumber;
+            set => lastSemanticNumber = value;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         {
             var options = BuildVersionsEditorUtil.BuildOptions;
             
-            options.LastSystematicVersionNumberSaved = SystematicVersionUpdater.GetVersionNumber(EditorUserBuildSettings.activeBuildTarget, false);
+            options.LastSemanticVersionNumberSaved = SemanticVersionUpdater.GetVersionNumber(EditorUserBuildSettings.activeBuildTarget, false);
             EditorUtility.SetDirty(options);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -180,14 +180,14 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
 
         /// <summary>
-        /// Calls the sync all the version numbers that use the systematic number...
+        /// Calls the sync all the version numbers that use the semantic number...
         /// </summary>
         public static void CallSyncInterfaces()
         {
-            // Stops the sync if the user is not using systematic updating...
-            if (BuildVersionsEditorUtil.BuildOptions.updateSystematic == AssetUsageType.Disabled)
+            // Stops the sync if the user is not using semantic updating...
+            if (BuildVersionsEditorUtil.BuildOptions.updateSemantic == AssetUsageType.Disabled)
             {
-                BvLog.Warning("Update Systematic is disabled! Sync will not run while this setting is disabled.");
+                BvLog.Warning("Update semantic is disabled! Sync will not run while this setting is disabled.");
                 return;
             }
             
@@ -199,7 +199,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 return;
             }
 
-            var lastSaved = BuildVersionsEditorUtil.BuildOptions.LastSystematicVersionNumberSaved;
+            var lastSaved = BuildVersionsEditorUtil.BuildOptions.LastSemanticVersionNumberSaved;
 
             foreach (var t in listeners)
                 t.OnVersionSync(lastSaved.Length > 0 ? lastSaved : Application.version);
@@ -209,7 +209,6 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// <summary>
         /// Calls all build updaters that use dialogue to update 
         /// </summary>
-        /// <param name="target"></param>
         private static void CallRelevantDialogueBoxes(BuildTarget target)
         {
             var listeners = BuildVersionsEditorUtil.GetAllInterfacesOfType<IPreBuildDialogue>();

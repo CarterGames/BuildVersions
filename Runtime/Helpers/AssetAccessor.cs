@@ -34,7 +34,7 @@ namespace CarterGames.Assets.BuildVersions
             get
             {
                 if (assets != null) return assets;
-                assets = Resources.LoadAll("Build Versions", typeof(BuildVersionsAsset)).Cast<BuildVersionsAsset>().ToArray();
+                assets = Resources.LoadAll("Carter Games/Build Versions", typeof(BuildVersionsAsset)).Cast<BuildVersionsAsset>().ToArray();
                 return assets;
             }
         }

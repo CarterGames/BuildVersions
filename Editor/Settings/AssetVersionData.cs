@@ -8,12 +8,12 @@
         /// <summary>
         /// The version number of the asset...
         /// </summary>
-        public static string VersionNumber => "1.1.0";
+        public static string VersionNumber => "1.1.1";
         
         
         /// <summary>
         /// The date this release of the asset was submitted for release...
         /// </summary>
-        public static string ReleaseDate => "01/08/2022";
+        public static string ReleaseDate => "29/03/2023";
     }
 }

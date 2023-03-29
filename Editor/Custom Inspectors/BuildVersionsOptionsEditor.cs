@@ -40,8 +40,8 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             assetStatus = serializedObject.FindProperty("assetStatus");
             buildUpdateTime = serializedObject.FindProperty("buildUpdateTime");
-            updatePlayerSettingsVersion = serializedObject.FindProperty("updateSystematic");
-            lastBuildNumber = serializedObject.FindProperty("lastSystematicNumber");
+            updatePlayerSettingsVersion = serializedObject.FindProperty("updatesemantic");
+            lastBuildNumber = serializedObject.FindProperty("lastsemanticNumber");
             androidCodeSetting = serializedObject.FindProperty("androidUpdateBundleCode");
 
             defaultTextColor = GUI.color;

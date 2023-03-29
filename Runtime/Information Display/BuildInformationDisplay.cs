@@ -22,10 +22,10 @@ namespace CarterGames.Assets.BuildVersions
         private const string DayString = "bv_day";
         private const string MonthString = "bv_month";
         private const string YearString = "bv_year";
-        private const string SystematicString = "bv_systematic";
-        private const string SystematicPatchString = "bv_systematic_patch";
-        private const string SystematicMinorString = "bv_systematic_minor";
-        private const string SystematicMajorString = "bv_systematic_major";
+        private const string semanticString = "bv_semantic";
+        private const string semanticPatchString = "bv_semantic_patch";
+        private const string semanticMinorString = "bv_semantic_minor";
+        private const string semanticMajorString = "bv_semantic_major";
         private const string NewLine = "newline";
         
         
@@ -137,42 +137,42 @@ namespace CarterGames.Assets.BuildVersions
                         
                         builder.Append(buildInformation.BuildDate.Split('/')[2]);
                         break;
-                    case SystematicString:
-                        builder.Append(buildInformation.SystematicVersionNumber);
+                    case semanticString:
+                        builder.Append(buildInformation.semanticVersionNumber);
                         break;
-                    case SystematicPatchString:
+                    case semanticPatchString:
                         
-                        split = buildInformation.SystematicVersionNumber.Split('.');
+                        split = buildInformation.semanticVersionNumber.Split('.');
 
                         if (split.Length < 3)
                         {
-                            BvLog.Warning("Unable to display patch of the systematic versioning number as it does not exist.");
+                            BvLog.Warning("Unable to display patch of the semantic versioning number as it does not exist.");
                             break;
                         }
 
-                        builder.Append(buildInformation.SystematicVersionNumber.Split('.')[2]);
+                        builder.Append(buildInformation.semanticVersionNumber.Split('.')[2]);
                         break;
-                    case SystematicMinorString:
+                    case semanticMinorString:
                         
-                        split = buildInformation.SystematicVersionNumber.Split('.');
+                        split = buildInformation.semanticVersionNumber.Split('.');
                         if (split.Length < 2)
                         {
-                            BvLog.Warning("Unable to display minor of the systematic versioning number as it does not exist.");
+                            BvLog.Warning("Unable to display minor of the semantic versioning number as it does not exist.");
                             break;
                         }
                         
-                        builder.Append(buildInformation.SystematicVersionNumber.Split('.')[1]);
+                        builder.Append(buildInformation.semanticVersionNumber.Split('.')[1]);
                         break;
-                    case SystematicMajorString:
+                    case semanticMajorString:
                         
-                        split = buildInformation.SystematicVersionNumber.Split('.');
+                        split = buildInformation.semanticVersionNumber.Split('.');
                         if (split.Equals(string.Empty))
                         {
-                            BvLog.Warning("Unable to display major of the systematic versioning number as it does not exist.");
+                            BvLog.Warning("Unable to display major of the semantic versioning number as it does not exist.");
                             break;
                         }
                         
-                        builder.Append(buildInformation.SystematicVersionNumber.Split('.')[0]);
+                        builder.Append(buildInformation.semanticVersionNumber.Split('.')[0]);
                         break;
                     case NewLine:
                         builder.AppendLine();

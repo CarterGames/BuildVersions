@@ -7,9 +7,9 @@ using UnityEngine;
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     /// <summary>
-    /// Updates the systematic version number...
+    /// Updates the semantic version number...
     /// </summary>
-    public sealed class SystematicVersionUpdater : IBuildUpdater, IPreBuildDialogue
+    public sealed class SemanticVersionUpdater : IBuildUpdater, IPreBuildDialogue
     {
         //
         //
@@ -20,20 +20,20 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         public void OnPreBuildDialogue(BuildTarget target)
         {
-            if (BuildVersionsEditorUtil.BuildOptions.updateSystematic != AssetUsageType.PromptMe)
+            if (BuildVersionsEditorUtil.BuildOptions.updateSemantic != AssetUsageType.PromptMe)
             {
-                BuildHandler.Register(new HandlerDialogueData(BuildVersionsEditorUtil.GetClassName<SystematicVersionUpdater>(), true));
+                BuildHandler.Register(new HandlerDialogueData(BuildVersionsEditorUtil.GetClassName<SemanticVersionUpdater>(), true));
                 return;
             }
 
-            var currentSystematic = GetVersionNumber(target, false);
-            var updatesSystematic = GetVersionNumber(target, true);
+            var currentSemantic = GetVersionNumber(target, false);
+            var updateSemantic = GetVersionNumber(target, true);
             
-            var choice = EditorUtility.DisplayDialog("Build Versions | Systematic Version Updater",
-                $"Do you want to increment the systematic version number for this build?\n\nThe version will update from {currentSystematic} to {updatesSystematic}.\n\nYou can disable this prompt in the asset settings.",
-                $"Yes (Set to {updatesSystematic})", $"No (Leave as {currentSystematic})");
+            var choice = EditorUtility.DisplayDialog("Build Versions | semantic Version Updater",
+                $"Do you want to increment the semantic version number for this build?\n\nThe version will update from {currentSemantic} to {updateSemantic}.\n\nYou can disable this prompt in the asset settings.",
+                $"Yes (Set to {updateSemantic})", $"No (Leave as {currentSemantic})");
 
-            BuildHandler.Register(new HandlerDialogueData(BuildVersionsEditorUtil.GetClassName<SystematicVersionUpdater>(), choice));
+            BuildHandler.Register(new HandlerDialogueData(BuildVersionsEditorUtil.GetClassName<SemanticVersionUpdater>(), choice));
         }
         
         
@@ -47,11 +47,11 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
         public void OnBuildVersionIncremented(BuildTarget buildTarget)
         {
-            if (BuildVersionsEditorUtil.BuildOptions.updateSystematic == AssetUsageType.Disabled) return;
-            if (!BuildHandler.Get<SystematicVersionUpdater>().Choice) return;
+            if (BuildVersionsEditorUtil.BuildOptions.updateSemantic == AssetUsageType.Disabled) return;
+            if (!BuildHandler.Get<SemanticVersionUpdater>().Choice) return;
 
             CallUpdateVersionNumber(buildTarget);
-            BuildVersionsEditorUtil.BuildOptions.LastSystematicVersionNumberSaved = GetVersionNumber(buildTarget, false);
+            BuildVersionsEditorUtil.BuildOptions.LastSemanticVersionNumberSaved = GetVersionNumber(buildTarget, false);
         }
 
 
@@ -195,7 +195,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
 
         /// <summary>
-        /// Updates the systematic version number...
+        /// Updates the semantic version number...
         /// </summary>
         /// <param name="input">The number string to edit</param>
         /// <param name="valueToIncrement">The index number to edit (0 = major, 1 = minor, 2 = patch (default))</param>
