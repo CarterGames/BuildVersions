@@ -29,7 +29,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             var currentSemantic = GetVersionNumber(target, false);
             var updateSemantic = GetVersionNumber(target, true);
             
-            var choice = EditorUtility.DisplayDialog("Build Versions | semantic Version Updater",
+            var choice = EditorUtility.DisplayDialog("Build Versions | Semantic Version Updater",
                 $"Do you want to increment the semantic version number for this build?\n\nThe version will update from {currentSemantic} to {updateSemantic}.\n\nYou can disable this prompt in the asset settings.",
                 $"Yes (Set to {updateSemantic})", $"No (Leave as {currentSemantic})");
 
