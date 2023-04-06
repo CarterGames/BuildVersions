@@ -105,37 +105,13 @@ namespace CarterGames.Assets.BuildVersions
                         builder.Append(buildInformation.BuildDate);
                         break;
                     case DayString:
-
-                        split = buildInformation.BuildDate.Split('/');
-                        if (split.Equals(string.Empty))
-                        {
-                            BvLog.Warning("Unable to display the day element of the date, please make sure the date field is populated correctly.");
-                            break;
-                        }
-                        
-                        builder.Append(buildInformation.BuildDate.Split('/')[0]);
+                        builder.Append(buildInformation.BuildDate.Day);
                         break;
                     case MonthString:
-                        
-                        split = buildInformation.BuildDate.Split('/');
-                        if (split.Length < 2)
-                        {
-                            BvLog.Warning("Unable to display the month element of the date, please make sure the date field is populated correctly.");
-                            break;
-                        }
-                        
-                        builder.Append(buildInformation.BuildDate.Split('/')[1]);
+                        builder.Append(buildInformation.BuildDate.Month);
                         break;
                     case YearString:
-                        
-                        split = buildInformation.BuildDate.Split('/');
-                        if (split.Length < 3)
-                        {
-                            BvLog.Warning("Unable to display the year element of the date, please make sure the date field is populated correctly.");
-                            break;
-                        }
-                        
-                        builder.Append(buildInformation.BuildDate.Split('/')[2]);
+                        builder.Append(buildInformation.BuildDate.Year);
                         break;
                     case SemanticString:
                         builder.Append(buildInformation.SemanticVersionNumber);

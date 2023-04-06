@@ -91,7 +91,11 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private void ShowValues()
         {
             EditorGUILayout.PropertyField(buildType);
+            
+            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(buildDate);
+            EditorGUI.indentLevel--;
+            
             EditorGUILayout.PropertyField(buildNumber);
         }
     }

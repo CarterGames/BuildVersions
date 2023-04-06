@@ -16,7 +16,7 @@ namespace CarterGames.Assets.BuildVersions
         //
         
         [SerializeField, HideInInspector] private string buildType;
-        [SerializeField, HideInInspector] private string buildDate;
+        [SerializeField] private SerializableDate buildDate;
         [SerializeField, HideInInspector] private int buildNumber = 1;
 
 
@@ -39,7 +39,7 @@ namespace CarterGames.Assets.BuildVersions
         /// <summary>
         /// Get the current build date
         /// </summary>
-        public string BuildDate
+        public SerializableDate BuildDate
         {
             get => buildDate;
             private set => buildDate = value;
@@ -66,11 +66,11 @@ namespace CarterGames.Assets.BuildVersions
         /// Increments the build number...
         /// </summary>
         public void IncrementBuildNumber() => buildNumber++;
-        
-        
+
+
         /// <summary>
         /// Sets the build date to the current date on your system...
         /// </summary>
-        public void SetBuildDate() => BuildDate = DateTime.Now.Date.ToString("d");
+        public void SetBuildDate() => BuildDate = new SerializableDate(DateTime.Now);
     }
 }
