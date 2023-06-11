@@ -149,7 +149,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     return updatedNumber
                         ? UpdateVersionNumber(PlayerSettings.Switch.releaseVersion)
                         : PlayerSettings.Switch.releaseVersion;
-#if !UNITY_2021_2_8_OR_NEWER
+#if UNITY_2022_2_X_OR_NEWER
                 case BuildTarget.Lumin:
                     return updatedNumber 
                         ? UpdateVersionNumber(PlayerSettings.Lumin.versionName) 
@@ -212,7 +212,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     PlayerSettings.Switch.releaseVersion = UpdateVersionNumber(PlayerSettings.Switch.releaseVersion, numberToUpdate);
                     PlayerSettings.Switch.displayVersion = UpdateVersionNumber(PlayerSettings.Switch.displayVersion, numberToUpdate);
                     break;
-#if !UNITY_2021_2_8_OR_NEWER
+#if UNITY_2022_2_X_OR_NEWER
                 case BuildTarget.Lumin:
                     PlayerSettings.Lumin.versionName = UpdateVersionNumber(PlayerSettings.Lumin.versionName, numberToUpdate);
                     break;
