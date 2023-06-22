@@ -81,10 +81,18 @@ namespace CarterGames.Assets.BuildVersions.Editor
         {
             get
             {
-                var script = AssetDatabase.FindAssets($"t:Script {nameof(UtilEditor)}")[0];
-                var path = AssetDatabase.GUIDToAssetPath(script);
+                string path = string.Empty;
+                
+                foreach (var scriptFound in AssetDatabase.FindAssets($"t:Script {nameof(UtilEditor)}"))
+                {
+                    path = AssetDatabase.GUIDToAssetPath(scriptFound);
+                    
+                    if (!path.Contains("Build Versions") || !path.Contains("/UtilEditor.cs")) continue;
+                    path = AssetDatabase.GUIDToAssetPath(scriptFound);
+                    path = path.Replace("/Carter Games/Build Versions/Code/Editor/Utility/UtilEditor.cs", "");
+                    return path;
+                }
 
-                path = path.Replace("/Carter Games/Build Versions/Code/Editor/Utility/UtilEditor.cs", "");
                 return path;
             }
         }

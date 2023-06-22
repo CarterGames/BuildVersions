@@ -35,12 +35,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// <summary>
         /// The version number of the asset...
         /// </summary>
-        public static string VersionNumber => "1.1.3";
+        public static string VersionNumber => "1.1.4";
         
         
         /// <summary>
         /// The date this release of the asset was submitted for release...
         /// </summary>
-        public static string ReleaseDate => "11/06/2023";
+        public static string ReleaseDate => "22/06/2023";
     }
 }
