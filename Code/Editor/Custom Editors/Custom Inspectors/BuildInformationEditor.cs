@@ -79,7 +79,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private static void ShowLogo()
         {
             // Shows either the Logo if found, if not nothing will show here...
-            if (UtilEditor.HasFile("BuildVersionsIcon"))
+            if (UtilEditor.Logo != null)
             {
                 GUILayout.Space(5f);
 

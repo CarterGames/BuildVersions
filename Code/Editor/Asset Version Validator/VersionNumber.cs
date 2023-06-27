@@ -21,57 +21,69 @@
 * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-namespace CarterGames.Assets.BuildVersions
+namespace CarterGames.Assets.BuildVersions.Editor
 {
-    public class BuildVersionsAssetIndex : BuildVersionsAsset
+    /// <summary>
+    /// A data class to hold a x.x.x version number for comparisons.
+    /// </summary>
+    [Serializable]
+    public class VersionNumber
     {
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Fields
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
-        [SerializeField] private SerializableDictionary<string, List<BuildVersionsAsset>> assets;
+        [SerializeField] private int major;
+        [SerializeField] private int minor;
+        [SerializeField] private int patch;
 
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Properties
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-
+        
         /// <summary>
-        /// A lookup of all the assets in the project that can be used at runtime.
+        /// The major version number.
         /// </summary>
-        public SerializableDictionary<string, List<BuildVersionsAsset>> Lookup => assets;
-
+        public int Major => major;
+        
+        
+        /// <summary>
+        /// The minor version number.
+        /// </summary>
+        public int Minor => minor;
+        
+        
+        /// <summary>
+        /// The patch version number.
+        /// </summary>
+        public int Patch => patch;
+        
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        |   Methods
+        |   Constructors
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
-        /// Sets the lookup to the value entered.
+        /// The blank constructor.
         /// </summary>
-        /// <param name="value">The data to insert.</param>
-        public void SetLookup(List<BuildVersionsAsset> value)
-        {
-            assets = new SerializableDictionary<string, List<BuildVersionsAsset>>();
+        public VersionNumber() { }
 
-            foreach (var foundAsset in value)
-            {
-                var key = foundAsset.GetType().ToString();
-                
-                if (assets.ContainsKey(key))
-                {
-                    if (assets[key].Contains(foundAsset)) continue;
-                    assets[key].Add(foundAsset);
-                }
-                else
-                {
-                    assets.Add(key, new List<BuildVersionsAsset>()
-                    {
-                        foundAsset
-                    });
-                }
-            }
+        
+        /// <summary>
+        /// Makes a new version number with the string entered.
+        /// </summary>
+        /// <param name="value">The string to convert.</param>
+        public VersionNumber(string value)
+        {
+            var split = value.Split('.');
+
+            if (split.Length != 3) return;
+
+            major = int.Parse(split[0]);
+            minor = int.Parse(split[1]);
+            patch = int.Parse(split[2]);
         }
     }
 }

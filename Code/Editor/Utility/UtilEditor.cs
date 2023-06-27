@@ -37,31 +37,14 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Fields
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
-        
-        // Paths
-        /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static readonly string DefaultAssetIndexPath = "Assets/Resources/Carter Games/Build Versions/Asset Index.asset";
-        private static readonly string DefaultBuildInfoPath = $"{AssetBasePath}/Carter Games/Build Versions/Data/Build Information.asset";
-        private static readonly string DefaultBuildOptionsPath = $"{AssetBasePath}/Carter Games/Build Versions/Data/Build Options.asset";
-
 
         // Filter
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         private const string BuildVersionsLogoFilter = "BuildVersionsIcon";
         private const string BuildVersionsHeaderFilter = "BuildVersionsEditorHeader";
         private const string CarterGamesBannerFilter = "CarterGamesBanner";
-        private static readonly string AssetIndexFilter = "t:buildversionsassetindex";
-        private static readonly string BuildInfoObjectFilter = "t:buildinformation";
-        private static readonly string OptionsTypeFilter = "t:buildversionoptions";
-        
-        
-        // Assets
-        /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static BuildVersionsAssetIndex cachedAssetIndex;
-        private static BuildInformation cachedBuildInformation;
-        private static BuildVersionOptions cachedBuildOptions;
-        
-        
+
+
         // Texture Caches
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         private static Texture2D cachedLogoImg;
@@ -69,79 +52,45 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private static Texture2D cachedCarterGamesBannerImg;
         
         
-
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Properties
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
-
-        /// <summary>
-        /// Gets the path where the asset code is located.
-        /// </summary>
-        private static string AssetBasePath
-        {
-            get
-            {
-                string path = string.Empty;
-                
-                foreach (var scriptFound in AssetDatabase.FindAssets($"t:Script {nameof(UtilEditor)}"))
-                {
-                    path = AssetDatabase.GUIDToAssetPath(scriptFound);
-                    
-                    if (!path.Contains("Build Versions") || !path.Contains("/UtilEditor.cs")) continue;
-                    path = AssetDatabase.GUIDToAssetPath(scriptFound);
-                    path = path.Replace("/Carter Games/Build Versions/Code/Editor/Utility/UtilEditor.cs", "");
-                    return path;
-                }
-
-                return path;
-            }
-        }
-        
         
         /// <summary>
         /// Gets the asset logo...
         /// </summary>
-        public static Texture2D Logo => GetOrAssignCache(ref cachedLogoImg, BuildVersionsLogoFilter);
+        public static Texture2D Logo => FileEditorUtil.GetOrAssignCache(ref cachedLogoImg, BuildVersionsLogoFilter);
 
 
         /// <summary>
         /// Gets the asset logo
         /// </summary>
-        public static Texture2D BannerLogo => GetOrAssignCache(ref cachedBannerLogoImg, BuildVersionsHeaderFilter);
+        public static Texture2D BannerLogo => FileEditorUtil.GetOrAssignCache(ref cachedBannerLogoImg, BuildVersionsHeaderFilter);
 
 
         /// <summary>
         /// Gets the Carter Games Banner Logo...
         /// </summary>
         public static Texture2D CarterGamesBanner =>
-            GetOrAssignCache(ref cachedCarterGamesBannerImg, CarterGamesBannerFilter);
+            FileEditorUtil.GetOrAssignCache(ref cachedCarterGamesBannerImg, CarterGamesBannerFilter);
 
 
         /// <summary>
         /// Gets the build information asset (or makes one if needed)...
         /// </summary>
-        public static BuildVersionsAssetIndex AssetIndex =>
-            CreateSoGetOrAssignCache(ref cachedAssetIndex, DefaultAssetIndexPath,
-                AssetIndexFilter);
-        
-        
+        public static AssetIndex AssetIndex => ScriptableRef.AssetIndex;
+
+
         /// <summary>
         /// Gets the build information asset (or makes one if needed)...
         /// </summary>
-        public static BuildInformation BuildInformation =>
-            CreateSoGetOrAssignCache(ref cachedBuildInformation, DefaultBuildInfoPath,
-                BuildInfoObjectFilter);
+        public static BuildInformation BuildInformation => ScriptableRef.BuildInformation;
 
 
         /// <summary>
         /// Gets the build version options asset (or makes one if needed)...
         /// </summary>
-        public static BuildVersionOptions BuildOptions =>
-            CreateSoGetOrAssignCache(ref cachedBuildOptions, DefaultBuildOptionsPath,
-                OptionsTypeFilter);
-
-        public static bool HasBuildInformationCached => cachedBuildInformation != null;
-        public static bool HasBuildOptionsCached => cachedBuildOptions != null;
+        public static BuildVersionOptions BuildOptions => ScriptableRef.BuildOptions;
 
 
         /// <summary>
@@ -151,123 +100,23 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// <returns>The name of said class</returns>
         public static string GetClassName<T>() => typeof(T).Name;
         
+        
+        /// <summary>
+        /// Gets if there is a settings asset in the project.
+        /// </summary>
+        public static bool HasInitialized
+        {
+            get
+            {
+                AssetIndexHandler.UpdateIndex();
+                return AssetIndex.Lookup.ContainsKey(typeof(BuildInformation).ToString());
+            }
+        }
+        
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Methods
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
-
-        /// <summary>
-        /// Checks to see whether or not a file of said type exists already (Editor Only)
-        /// </summary>
-        /// <param name="filter">The filter to search for...</param>
-        /// <returns>If the file was found.</returns>
-        public static bool HasFile(string filter)
-        {
-            return AssetDatabase.FindAssets(filter, null).Length > 0;
-        }
-
-
-        /// <summary>
-        /// Gets a file via filter.
-        /// </summary>
-        /// <param name="filter">The filter to search for.</param>
-        /// <typeparam name="T">The type.</typeparam>
-        /// <returns>The found file as an object if found successfully.</returns>
-        private static object GetFileViaFilter<T>(string filter)
-        {
-            var asset = AssetDatabase.FindAssets(filter, null);
-            if (asset == null || asset.Length <= 0) return null;
-            var path = AssetDatabase.GUIDToAssetPath(asset[0]);
-            return AssetDatabase.LoadAssetAtPath(path, typeof(T));
-        }
         
-        
-        /// <summary>
-        /// Gets or assigned the cached value of any type, just saving writing the same lines over and over xD
-        /// </summary>
-        /// <param name="cache">The cached value to assign or get.</param>
-        /// <param name="filter">The filter to use.</param>
-        /// <typeparam name="T">The type.</typeparam>
-        /// <returns>The assigned cache.</returns>
-        private static T GetOrAssignCache<T>(ref T cache, string filter)
-        {
-            if (cache != null) return cache;
-            cache = (T)GetFileViaFilter<T>(filter);
-            return cache;
-        }
-        
-        
-        /// <summary>
-        /// Creates a scriptable object if it doesn't exist and then assigns it to its cache. 
-        /// </summary>
-        /// <param name="cache">The cached value to assign or get.</param>
-        /// <param name="path">The path to create to if needed.</param>
-        /// <param name="filter">The filter to use.</param>
-        /// <typeparam name="T">The type.</typeparam>
-        /// <returns>The assigned cache.</returns>
-        private static T CreateSoGetOrAssignCache<T>(ref T cache, string path, string filter) where T : ScriptableObject
-        {
-            if (cache != null) return cache;
-            cache = (T)GetFileViaFilter<T>(filter);
-
-            if (cache == null)
-            {
-                cache = CreateScriptableObject<T>(path);
-            }
-            
-            AssetIndexHandler.UpdateIndex();
-
-            return cache;
-        }
-        
-        
-        /// <summary>
-        /// Creates a scriptable object of the type entered when called.
-        /// </summary>
-        /// <param name="path">The path to create the new asset at.</param>
-        /// <typeparam name="T">The type to make.</typeparam>
-        /// <returns>The newly created asset.</returns>
-        private static T CreateScriptableObject<T>(string path) where T : ScriptableObject
-        {
-            var instance = ScriptableObject.CreateInstance(typeof(T));
-
-            CreateToDirectory(path);
-
-            AssetDatabase.CreateAsset(instance, path);
-            AssetDatabase.Refresh();
-
-            return (T)instance;
-        }
-        
-        
-        /// <summary>
-        /// Creates all the folders to a path if they don't exist already.
-        /// </summary>
-        /// <param name="path">The path to create to.</param>
-        private static void CreateToDirectory(string path)
-        {
-            var currentPath = string.Empty;
-            var split = path.Split('/');
-
-            for (var i = 0; i < path.Split('/').Length; i++)
-            {
-                var element = path.Split('/')[i];
-                currentPath += element + "/";
-
-                if (i.Equals(split.Length - 1))
-                {
-                    continue;
-                }
-
-                if (Directory.Exists(currentPath))
-                {
-                    continue;
-                }
-
-                Directory.CreateDirectory(currentPath);
-            }
-        }
-
-
         /// <summary>
         /// Gets all the interface implementations and returns the result (Editor Only)
         /// </summary>
@@ -287,19 +136,18 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         public static void Initialize()
         {
-            if (cachedAssetIndex == null)
-            {
-                cachedAssetIndex = AssetIndex;
-            }
+            var index = AssetIndex;
+            var info = BuildInformation;
+            var settings = BuildOptions;
             
             AssetIndexHandler.UpdateIndex();
             EditorUtility.SetDirty(AssetIndex);
             
-            cachedBuildInformation = BuildInformation;
-            cachedBuildOptions = BuildOptions;
-            
             EditorUtility.SetDirty(BuildInformation);
             EditorUtility.SetDirty(BuildOptions);
+            
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
     }
 }

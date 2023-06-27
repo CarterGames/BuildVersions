@@ -90,7 +90,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         private static void ShowLogo()
         {
-            if (!UtilEditor.HasFile("BuildVersionsIcon")) return;
+            if (UtilEditor.Logo == null) return;
             
             GUILayout.Space(5f);
 

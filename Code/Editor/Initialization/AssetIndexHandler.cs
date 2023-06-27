@@ -79,7 +79,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
                 // Doesn't include editor only or the index itself.
                 if (assetObj == null) continue;
-                if (assetObj.GetType() == typeof(BuildVersionsAssetIndex)) continue;
+                if (assetObj.GetType() == typeof(AssetIndex)) continue;
                 foundAssets.Add((BuildVersionsAsset)AssetDatabase.LoadAssetAtPath(assetPath, typeof(BuildVersionsAsset)));
             }
             

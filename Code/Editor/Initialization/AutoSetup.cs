@@ -41,7 +41,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         [DidReloadScripts(-10)]
         private static void OnScriptsReloaded()
         {
-            if (UtilEditor.HasFile("t:buildversionsassetindex")) return;
+            if (UtilEditor.HasInitialized) return;
             UtilEditor.Initialize();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

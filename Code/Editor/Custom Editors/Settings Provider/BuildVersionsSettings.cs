@@ -88,21 +88,16 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         private static void DrawLogoGroup()
         {
-            if (!UtilEditor.HasFile("BuildVersionsEditorHeader")) return;
-            
-            var managerHeader = UtilEditor.BannerLogo;
-            
+            if (UtilEditor.BannerLogo == null) return;
+
             GUILayout.Space(5f);
                     
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
-                    
-            if (managerHeader != null)
+
+            if (GUILayout.Button(UtilEditor.BannerLogo, GUIStyle.none, GUILayout.MaxHeight(110)))
             {
-                if (GUILayout.Button(managerHeader, GUIStyle.none, GUILayout.MaxHeight(110)))
-                {
-                    GUI.FocusControl(null);
-                }
+                GUI.FocusControl(null);
             }
 
             GUILayout.FlexibleSpace();
@@ -122,7 +117,13 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             EditorGUILayout.LabelField("Info", EditorStyles.boldLabel);
 
+            EditorGUILayout.BeginHorizontal();
+            
             EditorGUILayout.LabelField(new GUIContent("Version"), new GUIContent(AssetVersionData.VersionNumber));
+            VersionEditorGUI.DrawCheckForUpdatesButton();
+            
+            EditorGUILayout.EndHorizontal();
+            
             EditorGUILayout.LabelField(new GUIContent("Release Date"), new GUIContent(AssetVersionData.ReleaseDate));
 
             GUILayout.Space(2.5f);
@@ -235,11 +236,11 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 Application.OpenURL("https://carter.games/buildversions");
             
             if (GUILayout.Button("Support", GUILayout.Height(30), GUILayout.MinWidth(100)))
-                Application.OpenURL("#");
+                Application.OpenURL("https://carter.games/contact");
 
             EditorGUILayout.EndHorizontal();
 
-            if (UtilEditor.HasFile("CarterGamesBanner"))
+            if (UtilEditor.CarterGamesBanner != null)
             {
                 var carterGamesBanner = UtilEditor.CarterGamesBanner;
 
