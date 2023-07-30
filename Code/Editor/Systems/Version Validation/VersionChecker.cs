@@ -21,77 +21,87 @@
  * THE SOFTWARE.
  */
 
-using System.Collections.Generic;
-using System.Linq;
+using CarterGames.Common;
 using UnityEngine;
+using UnityEngine.Networking;
 
-namespace CarterGames.Assets.BuildVersions
+namespace CarterGames.Assets.BuildVersions.Editor
 {
     /// <summary>
-    /// A helper class to access the build version assets at runtime...
+    /// Handles checking for the latest version.
     /// </summary>
-    public static class AssetAccessor
+    public static class VersionChecker
     {
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Fields
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-     
-        private const string IndexPath = "Carter Games/Build Versions/Asset Index";
         
+        /// <summary>
+        /// The download URL for the latest version.
+        /// </summary>
+        public static string DownloadURL => VersionInfo.DownloadBaseUrl + Versions.Data.Version;
         
-        // A cache of all the assets found...
-        private static AssetIndex indexCache;
-
-        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        |   Properties
-        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         /// <summary>
-        /// Gets all the assets from the build versions asset...
+        /// Gets if the latest version is this version.
         /// </summary>
-        public static AssetIndex Index
-        {
-            get
-            {
-                if (indexCache != null) return indexCache;
-                indexCache = (AssetIndex) Resources.Load(IndexPath, typeof(AssetIndex));
-                return indexCache;
-            }
-        }
+        public static bool IsLatestVersion => Versions.Data.Match(VersionInfo.ProjectVersionNumber);
+
+        
+        /// <summary>
+        /// Gets if the version here is higher that the latest version.
+        /// </summary>
+        public static bool IsNewerVersion => Versions.Data.IsHigherVersion(VersionInfo.ProjectVersionNumber);
+        
+        
+        /// <summary>
+        /// Gets the version data downloaded.
+        /// </summary>
+        public static VersionPacket Versions { get; private set; }
+
+        
+        /// <summary>
+        /// The latest version string.
+        /// </summary>
+        public static string LatestVersionNumberString => Versions.Data.Version;
+
+        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        |   Events
+        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// Raises when the data has been downloaded.
+        /// </summary>
+        public static Evt ResponseReceived { get; private set; } = new Evt();
 
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Methods
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-
+        
         /// <summary>
-        /// Gets the Save Manager Asset requested.
+        /// Gets the latest version data when called.
         /// </summary>
-        /// <typeparam name="T">The save manager asset to get.</typeparam>
-        /// <returns>The asset if it exists.</returns>
-        public static T GetAsset<T>() where T : BuildVersionsAsset
+        public static void GetLatestVersions()
         {
-            if (Index.Lookup.ContainsKey(typeof(T).ToString()))
-            {
-                return (T)Index.Lookup[typeof(T).ToString()][0];
-            }
-
-            return null;
+            RequestLatestVersionData();
         }
-        
-        
-        /// <summary>
-        /// Gets the Save Manager Asset requested.
-        /// </summary>
-        /// <typeparam name="T">The save manager asset to get.</typeparam>
-        /// <returns>The asset if it exists.</returns>
-        public static List<T> GetAssets<T>() where T : BuildVersionsAsset
-        {
-            if (Index.Lookup.ContainsKey(typeof(T).ToString()))
-            {
-                return Index.Lookup[typeof(T).ToString()].Cast<T>().ToList();
-            }
 
-            return null;
+
+        /// <summary>
+        /// Makes the web request & handles the response.
+        /// </summary>
+        private static void RequestLatestVersionData()
+        {
+            var request = UnityWebRequest.Get(VersionInfo.ValidationUrl);
+            var async = request.SendWebRequest();
+
+            async.completed += (a) =>
+            {
+                if (request.result != UnityWebRequest.Result.Success) return;
+
+                Versions = JsonUtility.FromJson<VersionPacket>(request.downloadHandler.text);
+                ResponseReceived.Raise();
+            };
         }
     }
 }

@@ -92,6 +92,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         public static BuildVersionOptions BuildOptions => ScriptableRef.BuildOptions;
 
+        
+        /// <summary>
+        /// Gets the build version options asset (or makes one if needed)...
+        /// </summary>
+        public static SerializedObject BuildOptionsObject => ScriptableRef.OptionsObject;
+
 
         /// <summary>
         /// Gets the name of the class entered...
@@ -109,7 +115,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             get
             {
                 AssetIndexHandler.UpdateIndex();
-                return AssetIndex.Lookup.ContainsKey(typeof(BuildInformation).ToString());
+                return ScriptableRef.HasAllAssets;
             }
         }
         
@@ -136,15 +142,17 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         public static void Initialize()
         {
-            var index = AssetIndex;
+            AssetDatabase.Refresh();
+            
+            // var index = AssetIndex;
             var info = BuildInformation;
             var settings = BuildOptions;
             
-            AssetIndexHandler.UpdateIndex();
-            EditorUtility.SetDirty(AssetIndex);
+            // AssetIndexHandler.UpdateIndex();
             
-            EditorUtility.SetDirty(BuildInformation);
-            EditorUtility.SetDirty(BuildOptions);
+            // EditorUtility.SetDirty(AssetIndex);
+            // EditorUtility.SetDirty(BuildInformation);
+            // EditorUtility.SetDirty(BuildOptions);
             
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

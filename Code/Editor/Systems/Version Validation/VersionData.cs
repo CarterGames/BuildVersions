@@ -21,57 +21,98 @@
 * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-namespace CarterGames.Assets.BuildVersions
+namespace CarterGames.Assets.BuildVersions.Editor
 {
-    public class AssetIndex : BuildVersionsAsset
+    /// <summary>
+    /// A copy of the Json data for each entry stored on the server.
+    /// </summary>
+    [Serializable]
+    public class VersionData
     {
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Fields
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
-        [SerializeField] private SerializableDictionary<string, List<BuildVersionsAsset>> assets;
+        [SerializeField] private string key;
+        [SerializeField] private string version;
+        [SerializeField] private string releaseDate;
 
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Properties
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// The key for the entry.
+        /// </summary>
+        public string Key
+        {
+            get => key;
+            set => key = value;
+        }
+        
+        
+        /// <summary>
+        /// The version for the entry.
+        /// </summary>
+        public string Version
+        {
+            get => version;
+            set => version = value;
+        }        
+        
+        
+        /// <summary>
+        /// The release date for the entry.
+        /// </summary>
+        public string ReleaseDate
+        {
+            get => releaseDate;
+            set => releaseDate = value;
+        }
+
 
         /// <summary>
-        /// A lookup of all the assets in the project that can be used at runtime.
+        /// The version number for the entry.
         /// </summary>
-        public SerializableDictionary<string, List<BuildVersionsAsset>> Lookup => assets;
-
+        public VersionNumber VersionNumber => new VersionNumber(Version);
+        
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Methods
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
-        /// Sets the lookup to the value entered.
+        /// Gets if the entry version number matches the entered string.
         /// </summary>
-        /// <param name="value">The data to insert.</param>
-        public void SetLookup(List<BuildVersionsAsset> value)
+        /// <param name="toCompare">The version string to compare.</param>
+        /// <returns>If the entry is a match or not on all values (major/minor/patch).</returns>
+        public bool Match(string toCompare)
         {
-            assets = new SerializableDictionary<string, List<BuildVersionsAsset>>();
+            var aVN = VersionNumber;
+            var bVN = new VersionNumber(toCompare);
 
-            foreach (var foundAsset in value)
-            {
-                var key = foundAsset.GetType().ToString();
+            return aVN.Major.Equals(bVN.Major) && aVN.Minor.Equals(bVN.Minor) && aVN.Patch.Equals(bVN.Patch);
+        }
                 
-                if (assets.ContainsKey(key))
-                {
-                    if (assets[key].Contains(foundAsset)) continue;
-                    assets[key].Add(foundAsset);
-                }
-                else
-                {
-                    assets.Add(key, new List<BuildVersionsAsset>()
-                    {
-                        foundAsset
-                    });
-                }
+        
+        /// <summary>
+        /// Gets if the entry is a higher version than the converted version.
+        /// </summary>
+        /// <param name="toCompare">The version string to compare.</param>
+        /// <returns>If the entry is greater on any (major/minor/patch) value.</returns>
+        public bool IsHigherVersion(string toCompare)
+        {
+            var aVN = VersionNumber;
+            var bVN = new VersionNumber(toCompare);
+
+            if (Match(toCompare))
+            {
+                return false;
             }
+            
+            return (aVN.Major < bVN.Major) || (aVN.Minor < bVN.Minor) || (aVN.Patch < bVN.Patch);
         }
     }
 }

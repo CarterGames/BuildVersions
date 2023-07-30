@@ -10,90 +10,68 @@
 * 
 * The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
+*
 *    
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 */
 
-using System;
-using UnityEngine;
+using System.IO;
+using UnityEditor;
 
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     /// <summary>
-    /// A copy of the Json data for each entry stored on the server.
+    /// A helper class to remove the old asset index if it exists in the project still.
+    /// As of (1.1.6) it was moved into the asset folder structure, so the external one is not used anymore.
     /// </summary>
-    [Serializable]
-    public class VersionData
+    public static class LegacyIndexRemovalTool
     {
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Fields
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
-        [SerializeField] private string key;
-        [SerializeField] private string version;
-        [SerializeField] private string releaseDate;
+        /// <summary>
+        /// The path of the old index to clear.
+        /// </summary>
+        private const string LegacyIndexPath = "Assets/Resources/Carter Games/Build Versions/Asset Index.asset";
 
-        /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        |   Properties
-        ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        
-        /// <summary>
-        /// The key for the entry.
-        /// </summary>
-        public string Key
-        {
-            get => key;
-            set => key = value;
-        }
-        
-        
-        /// <summary>
-        /// The version for the entry.
-        /// </summary>
-        public string Version
-        {
-            get => version;
-            set => version = value;
-        }        
-        
-        
-        /// <summary>
-        /// The release date for the entry.
-        /// </summary>
-        public string ReleaseDate
-        {
-            get => releaseDate;
-            set => releaseDate = value;
-        }
-
-
-        /// <summary>
-        /// The version number for the entry.
-        /// </summary>
-        public VersionNumber VersionNumber => new VersionNumber(Version);
-        
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Methods
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
         
         /// <summary>
-        /// Gets if the entry version number matches the entered string.
+        /// Returns if the old index is still in place.
         /// </summary>
-        /// <param name="toCompare">The version string to compare.</param>
-        /// <returns>If the entry is a match or not on all values (major/minor/patch).</returns>
-        public bool Match(string toCompare)
+        /// <returns>Bool</returns>
+        private static bool HasLegacyIndex()
         {
-            var aVN = VersionNumber;
-            var bVN = new VersionNumber(toCompare);
+            return File.Exists(LegacyIndexPath);
+        }
 
-            return aVN.Major.Equals(bVN.Major) && aVN.Minor.Equals(bVN.Minor) && aVN.Patch.Equals(bVN.Patch);
+
+        /// <summary>
+        /// Tries to remove the old index and pathing where possible
+        /// </summary>
+        /// <remarks>Doesn't delete Carter Games folder in-case other assets still use it.</remarks>
+        public static void TryRemoveOldIndex()
+        {
+            if (!HasLegacyIndex()) return;
+            
+            Directory.Delete("Assets/Resources/Carter Games/Build Versions/", true);
+            AssetDatabase.Refresh();
+
+            if (Directory.GetFiles("Assets/Resources/Carter Games/").Length <= 1)
+            {
+                FileUtil.DeleteFileOrDirectory("Assets/Resources/Carter Games");
+            }
+
+            AssetDatabase.Refresh();
         }
     }
 }

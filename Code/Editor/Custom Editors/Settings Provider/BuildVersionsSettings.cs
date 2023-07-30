@@ -37,8 +37,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
         
         private static Color defaultTextColour;             // The default color of gui.color...
-        private static SerializedObject options;            // The options asset to edit...
-        
+
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Provider
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
@@ -57,8 +56,6 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     defaultTextColour = GUI.color;
                     DrawLogoGroup();
 
-                     options = new SerializedObject(UtilEditor.BuildOptions);
-                    
                     DrawInfo();
                     GUILayout.Space(2.5f);
                     DrawOptions();
@@ -66,10 +63,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     DrawAndroidBundle();
                     DrawButton();
                     
-                    if (options != null)
+                    if (UtilEditor.BuildOptionsObject != null)
                     {
-                        options.ApplyModifiedProperties();
-                        options.Update();
+                        UtilEditor.BuildOptionsObject.ApplyModifiedProperties();
+                        UtilEditor.BuildOptionsObject.Update();
                     }
                 },
                 
@@ -155,7 +152,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         private static void DrawEnableAsset()
         {
-            EditorGUILayout.PropertyField(options.FindProperty("assetStatus"), new GUIContent("Asset Status"));
+            EditorGUILayout.PropertyField(UtilEditor.BuildOptionsObject.FindProperty("assetStatus"), new GUIContent("Asset Status"));
         }
 
 
@@ -165,9 +162,8 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private static void DrawUpdateBuildTime()
         {
             EditorGUI.BeginChangeCheck();
-
-            var info = UtilEditor.BuildInformation;
-            var prop = options.FindProperty("buildUpdateTime");
+            
+            var prop = UtilEditor.BuildOptionsObject.FindProperty("buildUpdateTime");
             var oldSetting = prop.intValue;
 
             EditorGUILayout.PropertyField(prop, new GUIContent("Build Update Time"));
@@ -177,10 +173,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 switch (oldSetting)
                 {
                     case 0 when prop.intValue.Equals(1):
-                        info.BuildNumber++;
+                        UtilEditor.BuildInformation.BuildNumber++;
                         break;
                     case 1 when prop.intValue.Equals(0):
-                        info.BuildNumber--;
+                        UtilEditor.BuildInformation.BuildNumber--;
                         break;
                 }
             }
@@ -192,13 +188,13 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         private static void DrawSemantic()
         {
-            EditorGUILayout.PropertyField(options.FindProperty("updateSemantic"), new GUIContent("Use Semantic Version"));
+            EditorGUILayout.PropertyField(UtilEditor.BuildOptionsObject.FindProperty("updateSemantic"), new GUIContent("Use Semantic Version"));
 
             GUI.enabled = false;
-            EditorGUILayout.PropertyField(options.FindProperty("lastSemanticNumber"), new GUIContent("Cached Version Number"));
+            EditorGUILayout.PropertyField(UtilEditor.BuildOptionsObject.FindProperty("lastSemanticNumber"), new GUIContent("Cached Version Number"));
             GUI.enabled = true;
             
-            EditorGUILayout.PropertyField(options.FindProperty("showLogs"), new GUIContent("Show Logs", "Should the asset throw log messages?"));
+            EditorGUILayout.PropertyField(UtilEditor.BuildOptionsObject.FindProperty("showLogs"), new GUIContent("Show Logs", "Should the asset throw log messages?"));
         }
 
 
@@ -214,7 +210,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             EditorGUILayout.LabelField("Android Settings", EditorStyles.boldLabel);
 
-            EditorGUILayout.PropertyField(options.FindProperty("androidUpdateBundleCode"),
+            EditorGUILayout.PropertyField(UtilEditor.BuildOptionsObject.FindProperty("androidUpdateBundleCode"),
                 new GUIContent("Update Bundle Code"));
             
             GUILayout.Space(2.5f);
@@ -230,13 +226,19 @@ namespace CarterGames.Assets.BuildVersions.Editor
             EditorGUILayout.BeginHorizontal();
             
             if (GUILayout.Button("GitHub", GUILayout.Height(30), GUILayout.MinWidth(100)))
+            {
                 Application.OpenURL("https://github.com/CarterGames/BuildVersions");
+            }
 
             if (GUILayout.Button("Documentation", GUILayout.Height(30), GUILayout.MinWidth(100)))
+            {
                 Application.OpenURL("https://carter.games/buildversions");
+            }
             
             if (GUILayout.Button("Support", GUILayout.Height(30), GUILayout.MinWidth(100)))
+            {
                 Application.OpenURL("https://carter.games/contact");
+            }
 
             EditorGUILayout.EndHorizontal();
 

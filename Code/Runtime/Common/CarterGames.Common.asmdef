@@ -1,9 +1,7 @@
 {
-    "name": "CarterGames.BuildVersion",
-    "references": [
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:87d8c87f2d1ea2c4bbaa667557d41bed"
-    ],
+    "name": "CarterGames.Common",
+    "rootNamespace": "CarterGames.Common",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

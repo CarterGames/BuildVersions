@@ -44,9 +44,15 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             VersionChecker.GetLatestVersions();
                 
-            VersionChecker.ResponseReceived += () =>
+            VersionChecker.ResponseReceived.Add(() =>
             {
-                if (!VersionChecker.IsLatestVersion)
+                if (VersionChecker.IsNewerVersion)
+                {
+                    EditorUtility.DisplayDialog("Update Checker",
+                        $"You are using a newer version than the currently released one.\n\nYours: {VersionInfo.ProjectVersionNumber}\nLatest: {VersionChecker.LatestVersionNumberString}",
+                        "Continue");
+                }
+                else if (!VersionChecker.IsLatestVersion)
                 {
                     if (EditorUtility.DisplayDialog("Update Checker",
                             $"You are using an older version of this package.\n\nCurrent: {VersionInfo.ProjectVersionNumber}\nLatest: {VersionChecker.LatestVersionNumberString}",
@@ -61,7 +67,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                         "You are using the latest version!",
                         "Continue");
                 }
-            };
+            });
         }
     }
 }

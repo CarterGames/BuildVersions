@@ -21,6 +21,9 @@
  * THE SOFTWARE.
  */
 
+using System.IO;
+using UnityEditor;
+
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     /// <summary>
@@ -34,16 +37,16 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         // Asset Paths
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static readonly string AssetIndexPath = $"Assets/Resources/Carter Games/{AssetName}/Asset Index.asset";
+        private static readonly string AssetIndexPath = $"{AssetBasePath}/Carter Games/{AssetName}/Resources/Asset Index.asset";
         private static readonly string BuildInformationPath = $"{AssetBasePath}/Carter Games/{AssetName}/Data/Build Information.asset";
         private static readonly string BuildOptionsPath = $"{AssetBasePath}/Carter Games/{AssetName}/Data/Build Options.asset";
         
 
         // Asset Filters
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static readonly string AssetIndexFilter = "t:assetindex";
-        private static readonly string BuildInfoFilter = "t:buildinformation";
-        private static readonly string OptionsFilter = "t:buildversionoptions";
+        private static readonly string AssetIndexFilter = $"t:{typeof(AssetIndex).FullName}";
+        private static readonly string BuildInfoFilter = $"t:{typeof(BuildInformation).FullName}";
+        private static readonly string OptionsFilter = $"t:{typeof(BuildVersionOptions).FullName}";
 
 
         // Asset Caches
@@ -51,8 +54,13 @@ namespace CarterGames.Assets.BuildVersions.Editor
         private static AssetIndex assetIndexCache;
         private static BuildInformation buildInformationCache;
         private static BuildVersionOptions buildOptionsCache;
-
         
+        
+        // SerializedObject Caches
+        /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        private static SerializedObject optionsAssetObjectCache;
+
+
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Properties
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
@@ -79,7 +87,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// The asset index for the asset.
         /// </summary>
         public static AssetIndex AssetIndex =>
-            FileEditorUtil.CreateSoGetOrAssignAssetCache(ref assetIndexCache, AssetIndexFilter, AssetIndexPath, AssetName, $"{AssetName}/Asset Index.asset");
+            FileEditorUtil.CreateSoGetOrAssignAssetCache(ref assetIndexCache, AssetIndexFilter, AssetIndexPath, AssetName, $"{AssetName}/Resources/Asset Index.asset");
         
         
         /// <summary>
@@ -94,5 +102,26 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// </summary>
         public static BuildVersionOptions BuildOptions =>
             FileEditorUtil.CreateSoGetOrAssignAssetCache(ref buildOptionsCache, OptionsFilter, BuildOptionsPath, AssetName, $"{AssetName}/Data/Build Options.asset");
+        
+        
+        // Object Properties
+        /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+        
+        /// <summary>
+        /// The editor SerializedObject for the asset.
+        /// </summary>
+        public static SerializedObject OptionsObject =>
+            FileEditorUtil.CreateGetOrAssignSerializedObjectCache(ref optionsAssetObjectCache, BuildOptions);
+        
+        
+        // Assets Initialized Check
+        /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+
+        /// <summary>
+        /// Gets if all the assets needed for the asset to function are in the project at the expected paths.
+        /// </summary>
+        public static bool HasAllAssets =>
+            File.Exists(AssetIndexPath) && File.Exists(BuildInformationPath) &&
+            File.Exists(BuildOptionsPath);
     }
 }

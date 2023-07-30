@@ -21,81 +21,77 @@
  * THE SOFTWARE.
  */
 
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Networking;
 
-namespace CarterGames.Assets.BuildVersions.Editor
+namespace CarterGames.Assets.BuildVersions
 {
     /// <summary>
-    /// Handles checking for the latest version.
+    /// A helper class to access the build version assets at runtime...
     /// </summary>
-    public static class VersionChecker
+    public static class AssetAccessor
     {
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Fields
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+     
+        private const string IndexPath = "Asset Index";
         
-        /// <summary>
-        /// The download URL for the latest version.
-        /// </summary>
-        public static string DownloadURL => VersionInfo.DownloadBaseUrl + Versions.Data.Version;
         
-
-        /// <summary>
-        /// Gets if the latest version is this version.
-        /// </summary>
-        public static bool IsLatestVersion => Versions.Data.Match(VersionInfo.ProjectVersionNumber);
-
-        
-        /// <summary>
-        /// Gets the version data downloaded.
-        /// </summary>
-        public static VersionPacket Versions { get; private set; }
-
-        
-        /// <summary>
-        /// The latest version string.
-        /// </summary>
-        public static string LatestVersionNumberString => Versions.Data.Version;
+        // A cache of all the assets found...
+        private static AssetIndex indexCache;
 
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        |   Events
+        |   Properties
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        
+
         /// <summary>
-        /// Raises when the data has been downloaded.
+        /// Gets all the assets from the build versions asset...
         /// </summary>
-        public static Action ResponseReceived { get; set; } = delegate {  };
-        
+        public static AssetIndex Index
+        {
+            get
+            {
+                if (indexCache != null) return indexCache;
+                indexCache = (AssetIndex) Resources.Load(IndexPath, typeof(AssetIndex));
+                return indexCache;
+            }
+        }
+
         /* ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
         |   Methods
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
+
+        /// <summary>
+        /// Gets the Save Manager Asset requested.
+        /// </summary>
+        /// <typeparam name="T">The save manager asset to get.</typeparam>
+        /// <returns>The asset if it exists.</returns>
+        public static T GetAsset<T>() where T : BuildVersionsAsset
+        {
+            if (Index.Lookup.ContainsKey(typeof(T).ToString()))
+            {
+                return (T)Index.Lookup[typeof(T).ToString()][0];
+            }
+
+            return null;
+        }
+        
         
         /// <summary>
-        /// Gets the latest version data when called.
+        /// Gets the Save Manager Asset requested.
         /// </summary>
-        public static void GetLatestVersions()
+        /// <typeparam name="T">The save manager asset to get.</typeparam>
+        /// <returns>The asset if it exists.</returns>
+        public static List<T> GetAssets<T>() where T : BuildVersionsAsset
         {
-            RequestLatestVersionData();
-        }
-
-
-        /// <summary>
-        /// Makes the web request & handles the response.
-        /// </summary>
-        private static void RequestLatestVersionData()
-        {
-            var request = UnityWebRequest.Get(VersionInfo.ValidationUrl);
-            var async = request.SendWebRequest();
-
-            async.completed += (a) =>
+            if (Index.Lookup.ContainsKey(typeof(T).ToString()))
             {
-                if (request.result != UnityWebRequest.Result.Success) return;
+                return Index.Lookup[typeof(T).ToString()].Cast<T>().ToList();
+            }
 
-                Versions = JsonUtility.FromJson<VersionPacket>(request.downloadHandler.text);
-                ResponseReceived?.Invoke();
-            };
+            return null;
         }
     }
 }

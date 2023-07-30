@@ -36,24 +36,18 @@ namespace CarterGames.Assets.BuildVersions.Editor
         |   Fields
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
         
-        private BuildInformation info;
         private Color defaultTextColor;
         private Color defaultBackgroundColor;
         
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Unity Methods
         ————————————————————————————————————————————————————————————————————————————————————————————————————————————— */
-        
-        private void OnEnable()
-        {
-            info = UtilEditor.BuildInformation;
-            defaultTextColor = GUI.color;
-            defaultBackgroundColor = GUI.backgroundColor;
-        }
-        
 
         public override void OnInspectorGUI()
         {
+            defaultTextColor = GUI.color;
+            defaultBackgroundColor = GUI.backgroundColor;
+            
             ShowLogo();
 
             GUILayout.Space(4.5f);
@@ -124,10 +118,10 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 switch (oldSetting)
                 {
                     case 0 when serializedObject.FindProperty("buildUpdateTime").intValue.Equals(1):
-                        info.BuildNumber++;
+                        UtilEditor.BuildInformation.BuildNumber++;
                         break;
                     case 1 when serializedObject.FindProperty("buildUpdateTime").intValue.Equals(0):
-                        info.BuildNumber--;
+                        UtilEditor.BuildInformation.BuildNumber--;
                         break;
                 }
             }
