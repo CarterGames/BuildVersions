@@ -44,16 +44,16 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
         // Asset Filters
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static readonly string AssetIndexFilter = $"t:{typeof(AssetIndex).FullName}";
-        private static readonly string BuildInfoFilter = $"t:{typeof(BuildInformation).FullName}";
-        private static readonly string OptionsFilter = $"t:{typeof(BuildVersionOptions).FullName}";
+        private static readonly string AssetIndexFilter = $"t:{typeof(CarterGames.Assets.BuildVersions.AssetIndex).FullName}";
+        private static readonly string BuildInfoFilter = $"t:{typeof(CarterGames.Assets.BuildVersions.BuildInformation).FullName}";
+        private static readonly string OptionsFilter = $"t:{typeof(CarterGames.Assets.BuildVersions.BuildVersionOptions).FullName}";
 
 
         // Asset Caches
         /* ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-        private static AssetIndex assetIndexCache;
-        private static BuildInformation buildInformationCache;
-        private static BuildVersionOptions buildOptionsCache;
+        private static CarterGames.Assets.BuildVersions.AssetIndex assetIndexCache;
+        private static CarterGames.Assets.BuildVersions.BuildInformation buildInformationCache;
+        private static CarterGames.Assets.BuildVersions.BuildVersionOptions buildOptionsCache;
         
         
         // SerializedObject Caches
@@ -86,21 +86,21 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// <summary>
         /// The asset index for the asset.
         /// </summary>
-        public static AssetIndex AssetIndex =>
+        public static CarterGames.Assets.BuildVersions.AssetIndex AssetIndex =>
             FileEditorUtil.CreateSoGetOrAssignAssetCache(ref assetIndexCache, AssetIndexFilter, AssetIndexPath, AssetName, $"{AssetName}/Resources/Asset Index.asset");
         
         
         /// <summary>
         /// The editor settings for the asset.
         /// </summary>
-        public static BuildInformation BuildInformation =>
+        public static CarterGames.Assets.BuildVersions.BuildInformation BuildInformation =>
             FileEditorUtil.CreateSoGetOrAssignAssetCache(ref buildInformationCache, BuildInfoFilter, BuildInformationPath, AssetName, $"{AssetName}/Data/Build Information.asset");
         
         
         /// <summary>
         /// The runtime settings for the asset.
         /// </summary>
-        public static BuildVersionOptions BuildOptions =>
+        public static CarterGames.Assets.BuildVersions.BuildVersionOptions BuildOptions =>
             FileEditorUtil.CreateSoGetOrAssignAssetCache(ref buildOptionsCache, OptionsFilter, BuildOptionsPath, AssetName, $"{AssetName}/Data/Build Options.asset");
         
         

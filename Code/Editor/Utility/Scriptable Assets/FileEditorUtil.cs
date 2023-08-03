@@ -89,19 +89,23 @@ namespace CarterGames.Assets.BuildVersions.Editor
         {
             string path = string.Empty;
             var containsChecks = new List<string> { AssetName, $"/{BasePathScriptName}.cs" };
-                
+            
             foreach (var scriptFound in AssetDatabase.FindAssets($"t:Script {nameof(UtilEditor)}"))
             {
                 path = AssetDatabase.GUIDToAssetPath(scriptFound);
 
                 foreach (var check in containsChecks)
                 {
-                    if (!path.Contains(check)) continue;
+                    if (!path.Contains(check)) goto SkipAndLoop;
                 }
                 
                 path = AssetDatabase.GUIDToAssetPath(scriptFound);
                 path = path.Replace(BasePathScriptPath, "");
+                
                 return path;
+                
+                // Skips the return as the path contained an invalid element for the asset...
+                SkipAndLoop: ;
             }
 
             return path;

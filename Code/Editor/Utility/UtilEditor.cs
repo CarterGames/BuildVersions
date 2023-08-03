@@ -78,19 +78,19 @@ namespace CarterGames.Assets.BuildVersions.Editor
         /// <summary>
         /// Gets the build information asset (or makes one if needed)...
         /// </summary>
-        public static AssetIndex AssetIndex => ScriptableRef.AssetIndex;
+        public static CarterGames.Assets.BuildVersions.AssetIndex AssetIndex => ScriptableRef.AssetIndex;
 
 
         /// <summary>
         /// Gets the build information asset (or makes one if needed)...
         /// </summary>
-        public static BuildInformation BuildInformation => ScriptableRef.BuildInformation;
+        public static CarterGames.Assets.BuildVersions.BuildInformation BuildInformation => ScriptableRef.BuildInformation;
 
 
         /// <summary>
         /// Gets the build version options asset (or makes one if needed)...
         /// </summary>
-        public static BuildVersionOptions BuildOptions => ScriptableRef.BuildOptions;
+        public static CarterGames.Assets.BuildVersions.BuildVersionOptions BuildOptions => ScriptableRef.BuildOptions;
 
         
         /// <summary>

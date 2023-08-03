@@ -1,5 +1,5 @@
 {
-    "name": "CarterGames.Common",
+    "name": "CarterGames.BuildVersions.Common",
     "rootNamespace": "CarterGames.Common",
     "references": [],
     "includePlatforms": [],
