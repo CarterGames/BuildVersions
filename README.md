@@ -1,4 +1,5 @@
-![2022 1 - BV Banner - 1200x630](https://user-images.githubusercontent.com/33253710/166158716-bb68ba09-e683-4e7b-b5bf-9110c4273d58.jpg)
+![Banner Full 1960x](https://github.com/CarterGames/BuildVersions/assets/33253710/cc6140ef-70b9-4f70-9748-f4f91850f124)
+
 
 <b>Build Versions</b> is a <b>FREE</b> build version updater tool for Unity that keeps your track of your projects versioning so you don't have to. 
 
