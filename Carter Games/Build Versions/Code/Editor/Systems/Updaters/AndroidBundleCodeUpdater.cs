@@ -44,7 +44,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         {
             if (target != BuildTarget.Android) return;
 
-            if (UtilEditor.BuildOptions.androidUpdateBundleCode != AssetUsageType.PromptMe)
+            if (UtilEditor.BuildOptions.AndroidBundleCodeUsage != AssetUsageType.PromptMe)
             {
                 BuildHandler.Register(new HandlerDialogueData(UtilEditor.GetClassName<AndroidBundleCodeUpdater>(), true));
                 return;
@@ -76,7 +76,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         public void OnBuildVersionIncremented(BuildTarget buildTarget)
         {
             if (buildTarget != BuildTarget.Android) return;
-            if (UtilEditor.BuildOptions.androidUpdateBundleCode == AssetUsageType.Disabled) return;
+            if (UtilEditor.BuildOptions.AndroidBundleCodeUsage == AssetUsageType.Disabled) return;
             if (!BuildHandler.Get<AndroidBundleCodeUpdater>().Choice) return;
 
             PlayerSettings.Android.bundleVersionCode++;
