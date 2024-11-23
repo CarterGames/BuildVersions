@@ -5,9 +5,10 @@
 
 ## Badges
 ![CodeFactor](https://www.codefactor.io/repository/github/cartergames/BuildVersions/badge?style=for-the-badge)
-![GitHub all releases](https://img.shields.io/github/downloads/CarterGames/BuildVersions/total?style=for-the-badge)
+![GitHub all releases](https://img.shields.io/github/downloads/CarterGames/BuildVersions/total?style=for-the-badge&color=8d6ca1)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/CarterGames/BuildVersions?style=for-the-badge)
 ![GitHub repo size](https://img.shields.io/github/repo-size/CarterGames/BuildVersions?style=for-the-badge)
+![Unity](https://img.shields.io/badge/Unity-2020.3.x_or_higher-critical?style=for-the-badge&color=8b8b8b)
 
 ## Key Features
 - Automatic build information updating.
