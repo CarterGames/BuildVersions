@@ -44,7 +44,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
             public static readonly GUIContent Date =
                 new GUIContent(
-                    "Release date",
+                    "Release date (Y/M/D)",
                     "The date the version of the asset you are using was released on.");
         }
         

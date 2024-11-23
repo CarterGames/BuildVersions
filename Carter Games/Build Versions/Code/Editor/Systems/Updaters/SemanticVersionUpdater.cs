@@ -145,8 +145,13 @@ namespace CarterGames.Assets.BuildVersions.Editor
                         : PlayerSettings.tvOS.buildNumber;
                 case BuildTarget.Switch:
                     return updatedNumber
+#if UNITY_6000_0_OR_NEWER
+                        ? UpdateVersionNumber(PlayerSettings.bundleVersion)
+                        : PlayerSettings.bundleVersion;
+#else
                         ? UpdateVersionNumber(PlayerSettings.Switch.releaseVersion)
                         : PlayerSettings.Switch.releaseVersion;
+#endif
 #if UNITY_2022_2_X_OR_NEWER
                 case BuildTarget.Lumin:
                     return updatedNumber 
@@ -158,7 +163,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                         ? UpdateVersionNumber(PlayerSettings.bundleVersion) 
                         : PlayerSettings.bundleVersion;
                 default:
-                    BvLog.Error("Unable to increment build number, platform not recognised!");
+                    BVLogger.Error("Unable to increment build number, platform not recognised!");
                     return string.Empty;
             }
         }
@@ -207,8 +212,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     PlayerSettings.tvOS.buildNumber = UpdateVersionNumber(PlayerSettings.tvOS.buildNumber, numberToUpdate);
                     break;
                 case BuildTarget.Switch:
+#if UNITY_6000_0_OR_NEWER
+                    PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, numberToUpdate);
+#else
                     PlayerSettings.Switch.releaseVersion = UpdateVersionNumber(PlayerSettings.Switch.releaseVersion, numberToUpdate);
                     PlayerSettings.Switch.displayVersion = UpdateVersionNumber(PlayerSettings.Switch.displayVersion, numberToUpdate);
+#endif
                     break;
 #if UNITY_2022_2_X_OR_NEWER
                 case BuildTarget.Lumin:
@@ -219,7 +228,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
                     PlayerSettings.bundleVersion = UpdateVersionNumber(PlayerSettings.bundleVersion, numberToUpdate);
                     break;
                 default:
-                    BvLog.Error("Unable to increment build number, platform not recognised!");
+                    BVLogger.Error("Unable to increment build number, platform not recognised!");
                     break;
             }
         }
@@ -239,7 +248,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             // If the build version format is incorrect... complain about it and don't increment the number...
             if (versionParts.Length != 3 || !int.TryParse(versionParts[valueToIncrement], out var buildNumber))
             {
-                BvLog.Error("Unable to update player settings build version, please make sure you are using a major, minor, patch (x.x.x) style format in your player settings");
+                BVLogger.Error("Unable to update player settings build version, please make sure you are using a major, minor, patch (x.x.x) style format in your player settings");
                 return input;
             }
             

@@ -85,7 +85,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
 
         /// <summary>
-        /// Updates the index with all the save manager asset scriptable objects in the project.
+        /// Updates the index with all the build versions asset scriptable objects in the project.
         /// </summary>
         [MenuItem("Tools/Carter Games/Build Versions/Update Asset Index", priority = 17)]
         public static void UpdateIndex()

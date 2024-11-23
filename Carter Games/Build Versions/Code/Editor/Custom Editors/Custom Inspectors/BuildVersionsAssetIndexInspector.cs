@@ -28,7 +28,7 @@ using UnityEngine;
 namespace CarterGames.Assets.BuildVersions.Editor
 {
     /// <summary>
-    /// Handles the custom inspector for the Save Manager asset index.
+    /// Handles the custom inspector for the Build Versions asset index.
     /// </summary>
     [CustomEditor(typeof(AssetIndex))]
     public sealed class BuildVersionsAssetIndexInspector : UnityEditor.Editor

@@ -28,7 +28,7 @@ namespace CarterGames.Assets.BuildVersions
     /// <summary>
     /// Handles the logs thrown by the asset...
     /// </summary>
-    public static class BvLog
+    public static class BVLogger
     {
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Fields
