@@ -49,7 +49,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             if (!SemanticVersionUpdater.IsInSemanticFormat(grabbed))
             {
-                BvLog.Normal("Unable to cache latest as it doesn't match the semantic formatting of \"x.y.z\"");
+                BVLogger.Normal("Unable to cache latest as it doesn't match the semantic formatting of \"x.y.z\"");
                 return;
             }
             
@@ -133,7 +133,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             // Stops if the asset is disabled from updating the build number...
             if (settings.Status == AssetUsageType.Disabled)
             {
-                BvLog.Warning("Asset is disabled, will not update any build numbers this build.");
+                BVLogger.Warning("Asset is disabled, will not update any build numbers this build.");
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             if (listeners.Length <= 0)
             {
-                BvLog.Error("No updaters found, so nothing will happen!");
+                BVLogger.Error("No updaters found, so nothing will happen!");
                 return;
             }
 
@@ -211,7 +211,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             // Stops the sync if the user is not using semantic updating...
             if (UtilEditor.BuildOptions.SemanticUsageType == AssetUsageType.Disabled)
             {
-                BvLog.Warning("Update semantic is disabled! Sync will not run while this setting is disabled.");
+                BVLogger.Warning("Update semantic is disabled! Sync will not run while this setting is disabled.");
                 return;
             }
             
@@ -219,7 +219,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             if (listeners.Length <= 0)
             {
-                BvLog.Normal("No sync implementations found, so nothing will happen!");
+                BVLogger.Normal("No sync implementations found, so nothing will happen!");
                 return;
             }
 
@@ -239,7 +239,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             
             if (listeners.Length <= 0)
             {
-                BvLog.Normal("No dialogue implementations found, ignoring.");
+                BVLogger.Normal("No dialogue implementations found, ignoring.");
                 return;
             }
 

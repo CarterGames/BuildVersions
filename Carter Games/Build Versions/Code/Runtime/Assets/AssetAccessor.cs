@@ -64,9 +64,9 @@ namespace CarterGames.Assets.BuildVersions
         ───────────────────────────────────────────────────────────────────────────────────────────────────────────── */
 
         /// <summary>
-        /// Gets the Save Manager Asset requested.
+        /// Gets the Build Versions Asset requested.
         /// </summary>
-        /// <typeparam name="T">The save manager asset to get.</typeparam>
+        /// <typeparam name="T">The build versions asset to get.</typeparam>
         /// <returns>The asset if it exists.</returns>
         public static T GetAsset<T>() where T : BuildVersionsAsset
         {
@@ -80,9 +80,9 @@ namespace CarterGames.Assets.BuildVersions
         
         
         /// <summary>
-        /// Gets the Save Manager Asset requested.
+        /// Gets the Build Versions Asset requested.
         /// </summary>
-        /// <typeparam name="T">The save manager asset to get.</typeparam>
+        /// <typeparam name="T">The build versions asset to get.</typeparam>
         /// <returns>The asset if it exists.</returns>
         public static List<T> GetAssets<T>() where T : BuildVersionsAsset
         {

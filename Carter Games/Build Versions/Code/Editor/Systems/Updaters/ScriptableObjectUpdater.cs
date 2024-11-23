@@ -50,7 +50,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
 
             if (info == null)
             {
-                BvLog.Error("Unable to update data as it was not found in the project!");
+                BVLogger.Error("Unable to update data as it was not found in the project!");
                 return;
             }
 

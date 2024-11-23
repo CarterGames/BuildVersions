@@ -134,7 +134,7 @@ namespace CarterGames.Assets.BuildVersions
 
                         if (split.Length < 3)
                         {
-                            BvLog.Warning("Unable to display patch of the semantic versioning number as it does not exist.");
+                            BVLogger.Warning("Unable to display patch of the semantic versioning number as it does not exist.");
                             break;
                         }
 
@@ -145,7 +145,7 @@ namespace CarterGames.Assets.BuildVersions
                         split = buildInformation.SemanticVersionNumber.Split('.');
                         if (split.Length < 2)
                         {
-                            BvLog.Warning("Unable to display minor of the semantic versioning number as it does not exist.");
+                            BVLogger.Warning("Unable to display minor of the semantic versioning number as it does not exist.");
                             break;
                         }
                         
@@ -156,7 +156,7 @@ namespace CarterGames.Assets.BuildVersions
                         split = buildInformation.SemanticVersionNumber.Split('.');
                         if (split.Equals(string.Empty))
                         {
-                            BvLog.Warning("Unable to display major of the semantic versioning number as it does not exist.");
+                            BVLogger.Warning("Unable to display major of the semantic versioning number as it does not exist.");
                             break;
                         }
                         

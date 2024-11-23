@@ -43,7 +43,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         [SettingsProvider]
         public static SettingsProvider BuildVersionsSettingsProvider()
         {
-            var provider = new SettingsProvider("Project/Carter Games/Build Versions", SettingsScope.Project)
+            var provider = new SettingsProvider("Carter Games/Build Versions", SettingsScope.Project)
             {
                 guiHandler = (searchContext) =>
                 {
