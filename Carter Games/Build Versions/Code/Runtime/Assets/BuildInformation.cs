@@ -38,6 +38,7 @@ namespace CarterGames.Assets.BuildVersions
         
         [SerializeField] private string buildType;
         [SerializeField] private SerializedDate buildDate;
+        [SerializeField] private long buildTimestamp;
         [SerializeField] private int buildNumber;
 
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -63,6 +64,22 @@ namespace CarterGames.Assets.BuildVersions
             private set => buildDate = value;
         }
         
+        
+        /// <summary>
+        /// Get the current build timestamp
+        /// </summary>
+        public long BuildTimestamp
+        {
+            get => buildTimestamp;
+            private set => buildTimestamp = value;
+        }
+
+
+        /// <summary>
+        /// Gets the current timestampt as a datetime.
+        /// </summary>
+        public DateTime TimestampAsDateTime => new DateTime(Epoch.Ticks).ToLocalTime().AddSeconds(buildTimestamp);
+        
 
         /// <summary>
         /// Get the current build number
@@ -78,6 +95,12 @@ namespace CarterGames.Assets.BuildVersions
         /// Get the current version number
         /// </summary>
         public string SemanticVersionNumber => Application.version;
+        
+        
+        /// <summary>
+        /// Mainly as older 2020.3.x doesn't have the API for it. 
+        /// </summary>
+        private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
         |   Constructor
@@ -105,6 +128,10 @@ namespace CarterGames.Assets.BuildVersions
         /// <summary>
         /// Sets the build date to the current date on your system...
         /// </summary>
-        public void SetBuildDate() => BuildDate = new SerializedDate(DateTime.Now);
+        public void SetBuildDate()
+        {
+            BuildDate = new SerializedDate(DateTime.Now);
+            BuildTimestamp = (long)((DateTime.Now - Epoch).TotalSeconds);
+        }
     }
 }
