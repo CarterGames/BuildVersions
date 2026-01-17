@@ -38,6 +38,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         
         private SerializedProperty buildType;
         private SerializedProperty buildDate;
+        private SerializedProperty buildTimestamp;
         private SerializedProperty buildNumber;
         
         /* —————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -48,6 +49,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
         {
             buildType = serializedObject.Fp("buildType");
             buildDate = serializedObject.Fp("buildDate");
+            buildTimestamp = serializedObject.Fp("buildTimestamp");
             buildNumber = serializedObject.Fp("buildNumber");
         }
 
@@ -97,6 +99,7 @@ namespace CarterGames.Assets.BuildVersions.Editor
             EditorGUILayout.PropertyField(buildDate, EditorMetaData.BuildInformation.Date);
             EditorGUI.indentLevel--;
             
+            EditorGUILayout.PropertyField(buildTimestamp, EditorMetaData.BuildInformation.Timestamp);
             EditorGUILayout.PropertyField(buildNumber, EditorMetaData.BuildInformation.Number);
         }
     }

@@ -82,6 +82,12 @@ namespace CarterGames.Assets.BuildVersions.Editor
                 new GUIContent(
                     "Build date",
                     "The date the build was made on.");
+            
+            
+            public static readonly GUIContent Timestamp =
+                new GUIContent(
+                    "Build Timestamp",
+                    "The exact timestamp the build was made at.");
 
 
             public static readonly GUIContent Number =

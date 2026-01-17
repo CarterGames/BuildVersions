@@ -42,6 +42,9 @@ namespace CarterGames.Assets.BuildVersions
         private const string DayString = "bv_day";
         private const string MonthString = "bv_month";
         private const string YearString = "bv_year";
+        private const string HourString = "bv_hour";
+        private const string MinuteString = "bv_minute";
+        private const string SecondString = "bv_second";
         private const string SemanticString = "bv_semantic";
         private const string SemanticPatchString = "bv_semantic_patch";
         private const string SemanticMinorString = "bv_semantic_minor";
@@ -115,6 +118,15 @@ namespace CarterGames.Assets.BuildVersions
                         break;
                     case DateString:
                         builder.Append(buildInformation.BuildDate);
+                        break;
+                    case SecondString:
+                        builder.Append(buildInformation.TimestampAsDateTime.Second);
+                        break;
+                    case MinuteString:
+                        builder.Append(buildInformation.TimestampAsDateTime.Minute);
+                        break;
+                    case HourString:
+                        builder.Append(buildInformation.TimestampAsDateTime.Hour);
                         break;
                     case DayString:
                         builder.Append(buildInformation.BuildDate.Day);
