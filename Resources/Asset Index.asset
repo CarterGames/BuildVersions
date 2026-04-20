@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c2a52bc435a48febc1acb5ee7c4dd80, type: 3}
+  m_Name: Asset Index
+  m_EditorClassIdentifier: 
+  assets:
+    list:
+    - key: CarterGames.Assets.BuildVersions.BuildInformation
+      value:
+      - {fileID: 11400000, guid: f94611f898121e94da78a00969b623f7, type: 2}
+      - {fileID: 11400000, guid: c9a39ab9ed408a2ea93983f24d4286d5, type: 2}
+    - key: CarterGames.Assets.BuildVersions.BuildVersionOptions
+      value:
+      - {fileID: 11400000, guid: 8466edb6731dee54d811688b2b22214b, type: 2}
+      - {fileID: 11400000, guid: fd4f9210254edefe6b3a8fbb803832e7, type: 2}

@@ -1,0 +1,19 @@
+{
+    "name": "CarterGames.Assets.BuildVersions.Editor",
+    "rootNamespace": "CarterGames.Assets.BuildVersions.Editor",
+    "references": [
+        "GUID:f693b8824d24be84681200cf06cccf09",
+        "GUID:87d8c87f2d1ea2c4bbaa667557d41bed"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
