@@ -1,4 +1,4 @@
-![V2 1200 x 630](https://github.com/CarterGames/BuildVersions/assets/33253710/4d738e43-581b-44a7-986d-3fb9c0801975)
+![BV Logo 160x](https://github.com/user-attachments/assets/650c266e-0d5b-4bad-ae01-c163cdab61c7)
 
 
 <b>Build Versions</b> is a <b>FREE</b> build version updater tool for Unity that keeps your track of your projects versioning so you don't have to. 
